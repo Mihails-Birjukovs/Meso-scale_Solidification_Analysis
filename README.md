@@ -14,12 +14,12 @@ Features under development:
 - Primary dendrite spacing measurements  
 - Deriving the local thickness of the solidified structures  
 - Optical flow velocimetry within the liquid domain
-- Improving performance by offloading some image filtering tasks to the GPU (CPU-only version will be kept as separate)  
+- Improving performance by offloading some image filtering tasks to the GPU (CPU-only version will be kept as a separate branch)  
 
 The underlying methodology, implementation and application examples are found in [ARXIV PREPRINT ID].  
 
 ACHTUNG: this Mathematica code uses MATLink  
-(MATLink hyperlink)  
+http://matlink.org/  
 and couples the code to the MATLAB engine to use this BM3D implementation:  
-(BM3D link)  
+https://webpages.tuni.fi/foi/GCF-BM3D/index.html#ref_software  
 Both MATLink and MATLAB are currently hard requirements.
