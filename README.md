@@ -20,6 +20,6 @@ The underlying methodology, implementation and application examples are found in
 
 ACHTUNG: this Mathematica code uses MATLink  
 http://matlink.org/  
-and couples the code to the MATLAB engine to use this BM3D implementation:  
+and couples the code to the MATLAB engine to use this BM3D implementation (currently v3.0.9):  
 https://webpages.tuni.fi/foi/GCF-BM3D/index.html#ref_software  
 Both MATLink and MATLAB are currently hard requirements.
