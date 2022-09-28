@@ -16,7 +16,8 @@ Features under development:
 - Optical flow velocimetry within the liquid domain
 - Improving performance by offloading some image filtering tasks to the GPU (CPU-only version will be kept as a separate branch)  
 
-The underlying methodology, implementation and application examples are found in [ARXIV PREPRINT ID].  
+The underlying methodology, implementation and application examples are found in:  
+[ARXIV PREPRINT ID]  
 
 ACHTUNG: this Mathematica code uses MATLink  
 http://matlink.org/  
