@@ -20,7 +20,7 @@ Features under development:
 - Primary dendrite spacing measurements  
 - Deriving the local thickness of the solidified structures  
 - Optical flow velocimetry within the liquid domain
-- Improving performance by offloading some image filtering tasks to the GPU (CPU-only version will be kept as a separate branch)  
+- Improving performance by offloading some image filtering tasks to a GPU (a CPU-only version will be kept as a separate branch)  
 
 The underlying methodology, implementation and application examples are found in:  
 [ARXIV PREPRINT ID]  
