@@ -1,5 +1,11 @@
 A Wolfram Mathematica image processing code for automated analysis of metal alloy solidification in Hele-Shaw cells, originally designed for dynamic X-ray imaging applications.  
 
+ACHTUNG: this Mathematica code uses MATLink  
+http://matlink.org/  
+and couples the code to the MATLAB engine to use this BM3D implementation (currently v3.0.9):  
+https://webpages.tuni.fi/foi/GCF-BM3D/index.html#ref_software  
+Both MATLink and MATLAB are currently hard requirements.  
+
 Current functionality:  
 - Liquid/solid domain segmentation  
 - Liquid cavity & channel (chimney) detection  
@@ -18,9 +24,3 @@ Features under development:
 
 The underlying methodology, implementation and application examples are found in:  
 [ARXIV PREPRINT ID]  
-
-ACHTUNG: this Mathematica code uses MATLink  
-http://matlink.org/  
-and couples the code to the MATLAB engine to use this BM3D implementation (currently v3.0.9):  
-https://webpages.tuni.fi/foi/GCF-BM3D/index.html#ref_software  
-Both MATLink and MATLAB are currently hard requirements.
