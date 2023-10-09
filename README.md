@@ -23,4 +23,4 @@ Features under development:
 - Improving performance by offloading some image filtering tasks to a GPU (a CPU-only version will be kept as a separate branch)  
 
 The underlying methodology, implementation and application examples are found in:  
-[ARXIV PREPRINT ID]  
+https://link.springer.com/article/10.1007/s00348-023-03671-2 (paper + supplementary material .pdf)  
