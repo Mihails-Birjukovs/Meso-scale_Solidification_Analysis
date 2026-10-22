@@ -23,4 +23,21 @@ Features under development:
 - Improving performance by offloading some image filtering tasks to a GPU (a CPU-only version will be kept as a separate branch)  
 
 The underlying methodology, implementation and application examples are found in:  
-https://link.springer.com/article/10.1007/s00348-023-03671-2 (paper + supplementary material .pdf)  
+https://link.springer.com/article/10.1007/s00348-023-03671-2 (paper + supplementary material .pdf)
+
+---
+
+## Technical documentation (2026-10-22)
+
+The original description above summarizes the **published Mathematica solidification-analysis pipeline** and historical software prerequisites. For the current Python research extension, consult the [complete technical documentation](docs/README.md):
+
+- [Architecture and operating contract](docs/architecture-and-workflow.md)
+- [Existing source-code inventory and methods lineage](docs/current-code.md)
+- [Scientific models and equations](docs/scientific-methods.md)
+- [Confirmed issues and uncertainty register](docs/known-issues.md)
+- [Approved validation plan](docs/validation-roadmap.md)
+- [Publications, calibration provenance and external data](docs/references-data.md)
+
+**Current development focus:** `Python_code/ImagePreprocessWithReference.py` and `Python_code/VelocimetryRaksturlielumi.py`. The original Mathematica notebooks remain research/methodological references. The independent [2WCF-SVD optical-flow repository](https://github.com/pienins/Optical-flow-svd-and-fourier-filtering) is a **read-only upstream dependency** and is not to be modified here.
+
+The documentation separates **current implemented behavior** from **proposed and user-approved scientific models**. No claim is made that the experimental Ga–In energy budget has been validated or closed. For research-agent continuity see the [append-only handoff protocol](Handoff_file_exchange/README_for_agents.md) and [22 October 2026 comprehensive handoff](Handoff_file_exchange/2026-10-22_gpt6_full-chat_scientific-model-and-documentation-handoff.md).
