@@ -239,7 +239,9 @@ for frame_index in range(n_frames):
     plt.close()
 
     # Reconstruction of density and viscosity
-    rho = (alpha_gallium * rho_gallium + alpha_indium * rho_indium)
+    # C_in_percent is calibrated in wt.%; alpha_* are mass fractions here.
+    # Assuming additive volumes, mix specific volumes (1/rho), not densities.
+    rho = 1.0 / (alpha_gallium / rho_gallium + alpha_indium / rho_indium)
     mu = (alpha_gallium * mu_gallium + alpha_indium * mu_indium)
 
     # ========================================================
