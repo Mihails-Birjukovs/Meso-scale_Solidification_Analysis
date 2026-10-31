@@ -46,7 +46,7 @@ class RunnerPreflightTests(unittest.TestCase):
             KillIDs = [0, 2]
             Other = object()
             ImageFolder = Path("somewhere")
-        params = runner.collect_parameter_snapshot(FakeOFV())
+        params = runner.collect_parameter_snapshot(FakeOFV)
         self.assertEqual(params["ArrowDensityStep"], 7)
         self.assertEqual(params["KillIDs"], [0, 2])
         self.assertNotIn("Other", params)
