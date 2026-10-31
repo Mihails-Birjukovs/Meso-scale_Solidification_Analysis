@@ -1,0 +1,23 @@
+name: Phase 0 OFV contract tests
+
+on:
+  push:
+    branches:
+      - "feat/phase0-ofv-contract-*"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  phase0-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate without experimental data or upstream source
+        run: python -m unittest discover -s tests -p "test_phase0_*.py" -v
