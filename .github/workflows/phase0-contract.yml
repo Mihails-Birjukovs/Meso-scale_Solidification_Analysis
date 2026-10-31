@@ -20,4 +20,4 @@ jobs:
         with:
           python-version: "3.11"
       - name: Validate without experimental data or upstream source
-        run: python -m unittest discover -s tests -p "test_phase0_contract.py" -v
+        run: python -m unittest discover -s tests -p "test_phase0_*.py" -v
