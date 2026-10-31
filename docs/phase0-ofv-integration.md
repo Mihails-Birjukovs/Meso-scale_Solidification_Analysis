@@ -63,7 +63,20 @@ Example commands from the solidification repository checkout (substitute experim
 
     python Python_code/phase0_contract.py --images /path/to/filtered3D --concentration /path/to/Conc_In --raw-dt-s 0.2 --bin-size 5 --source-start-index 0 --pixel-size-m 0.000070 --velocity-inversion -1 --stage-tiff /path/to/EMPTY_2WCF_input --manifest-out /path/to/phase0-manifest.json
 
-    python -m unittest discover -s tests -p "test_phase0_contract.py" -v
+    python -m unittest discover -s tests -p "test_phase0_*.py" -v
+
+## Running OFV through the pinned external checkout
+
+[Python_code/run_2wcf_external.py](../Python_code/run_2wcf_external.py) is an original **launcher** that imports the pinned 2WCF-SVD implementation from an external local checkout. It avoids changing upstream hard-coded run paths and keeps the source separately installed. It **does execute** the audited third-party script in your environment, so only use a checkout whose SHA and content you trust; its preflight refuses any commit/blob mismatch. The launcher requires the upstream numerical dependencies, including wolframclient for WXF output. It has not yet been run on experimental images.
+
+    git clone https://github.com/pienins/Optical-flow-svd-and-fourier-filtering /path/to/2WCF_external
+    git -C /path/to/2WCF_external checkout --detach 27659ae0e0f798189e1fc7c4516453374ad3c9eb
+
+Run from a trustworthy Python environment with the upstream requirements installed:
+
+    python Python_code/run_2wcf_external.py --upstream-checkout /path/to/2WCF_external --images-tiff /path/to/EMPTY_2WCF_input --output /path/to/NEW_2WCF_run --arrow-step 7 --velocity-inversion -1 --video-fps 1
+
+The image folder must contain staged .tiff frames; the output folder must be new or empty. The launcher produces PKL, WXF, upstream QC and parameter snapshots, plus a provenance summary, with serial computation by default. It does **not** change upstream flow computation or interpolate density. The video frame rate must reflect the binned images; in the initial nominal 5-frame bins from a 5-fps acquisition the effective frame rate is 1 fps.
 
 After independently running the pinned upstream, use --flow-pkl /path/to/2WCF_output/pkl and --ofv-parameters /path/to/2WCF_output/parameters.json to check the new outputs. The upstream itself still requires its run-path settings to point to the staged image folder.
 
