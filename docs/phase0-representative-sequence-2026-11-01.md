@@ -55,6 +55,29 @@ For the existing postprocessor's **unchanged image-coordinate grid**, the correc
 
 The physical out-of-plane vorticity of an image-grid reconstruction is `omega_phys = du_image/dy_image - dv_image/dx_image`, the **negative** of the naive image-coordinate curl. Divergence and Newtonian scalar strain dissipation are invariant under this coordinated reflection.
 
+
+## Archived original 2WCF output — subsequently recovered on 2026-11-01
+
+A *separate matching-by-filename* run archive was recovered from the user's connected Drive:
+`20260331_4 Downsampled ImagesRun1_20260331_v3_3D_filtered_enhanced_KLD_v2_Run1_run_2.7z`, Drive file ID `1A7fBi_jZDlzHCoZvJAjPXFP3O0ngusjn`.
+
+This archive contains exactly **79 PKL** vector files indexed `velocity_field_00000.pkl` through `velocity_field_00078.pkl`, **79 WXF** files, a 79-row `flow_qc_metrics.csv`, `parameters.json`, CSV parameters, a plot, and AVI output. The PKLs were inspected with an explicitly restricted allowlist for NumPy pickled-array constructors; no arbitrary pickle code was permitted. All 79 vector records contain finite one-dimensional arrays `x,y,u,v`, consistent lengths, and samples on the expected **ArrowDensityStep=3** grid, x/y indices starting at 1. The 82×98 shape permits 27×33 = 891 nominal sample points. Observed counts range **576–891**, median **852**.
+
+**Actual archived parameters:** `VelocityInversion=-1`, `ArrowDensityStep=3`, `USE_SVD=true`, `KillIDs=[0]`, `UseConfidenceSmoothing=true`, `ConfidenceSigma=5`, `ConfidenceKernelSize=5`, `MinConfidence=0.01`, Farnebäck settings 0.75/8/25/10/7/2, `MedianOfMeansGroupSize=1000`, `VideoFPS=5`. The metadata do **not** include a source-code commit hash or acquisition timing manifest. VideoFPS is a visualization setting, **not proof of source acquisition FPS**.
+
+| Actual archived output statistic | Value |
+|---|---:|
+| Original PKL / WXF / QC records | 79 / 79 / 79 |
+| Original median vectors per pair | 852 |
+| Original median apparent speed over pairs | 0.8912 px/pair |
+| Original median forward-backward error over pairs | 0.1191 px |
+| Median pairwise u-forward (undoing inversion) | +0.0577 px/pair |
+| Median pairwise v-forward (image y-down) | -0.3664 px/pair |
+
+The archived output uses *SVD filtering and 3-pixel sparse sampling*, unlike the earlier source-matched diagnostic (which did not apply SVD and used 7-pixel sampling). The two computations must **not** be treated as an exact numerical reproduction or a quantitative algorithm-regression comparison.
+
+This establishes the original **saved-data interface** against real archived outputs and supports the coordinate convention documented above. However, it **does not establish the exact upstream generating commit**, measured time axis, physical flow direction, quantitative concentration field registration, or any energy budget. The original upstream program was **not re-executed** in the current runtime.
+
 ## Focused coordinate-sign correction on this feature branch
 
 The proposed follow-on PR:
