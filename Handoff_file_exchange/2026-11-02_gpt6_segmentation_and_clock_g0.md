@@ -1,0 +1,23 @@
+# Agent handoff — Phase 0 regional radiometry, original notebook segmentation and pair-center timing
+
+**Date:** 2026-11-02 (Europe/Riga).  
+**User approvals:** PR #5 reviewed and approved; merged into `main` at `4ea37018af3e1c4ee40d2d1e69ee001035bc9fa1`. User requests both no-dark and dark-corrected imaging, Mathematica v25 solid/plume/bulk-liquid segmentation assessment, separate temporal registration implementation and G0 closure assessment.  
+**Branch:** `feat/phase0-timestamp-registration-2026-11-02`, new draft PR for review; DO NOT merge without subsequent approval.
+
+## What was directly checked
+
+1. Existing full 2014-01-15 X: source TIFF dark/reference pilot: reference-only `g=-ln(I/R)` computes all five sampled frames with algebraically valid domain, whereas dark-corrected `g=-ln[(I-D)/(R-D)]` has full-field valid fraction 0.6983 down to 0.4049 across five spaced experimental frames. Mean and median five-image reference/dark results agree qualitatively. No negative g was silently clipped, neither branch calibrated to composition.
+2. Exact `Mathematica_code/Dendrite & Plume Analysis v25.nb` downloaded from GitHub into authorized AI-Lab analysis working directory; 814,430 bytes; Git blob SHA `b13ef6adda22405d89680e3ebe5da50e6f40d297` verified. Parsed as inert Notebook expression using licensed local Mathematica 12.1, **did not evaluate original InitializationCell code or load historic third-party packages**. Found MIL dynamic solid masks, liquid-cavity/connected-channel masks, dendrite skeleton algorithms and liquid nine-level `ClusteringComponents` with `Method->"KMedoids"`. Code labels intensity levels; no documented direct numerical concentration↔luminance calibration was established by this inspection.
+3. An isolated original WolframScript adaptation ran `ClusteringComponents[...,9,Method->"KMedoids"]` on a Gaussian-smoothed, segmentation-only display normalization of middle experimental TIFF for the same x281..480, y181..380 pixel patch (200×200). Both reference-only and dark-corrected cases generated nine clusters. Dark-corrected valid fraction 38,628/40,000=96.57% *inside this arbitrary patch* vs 58.29% full-frame for that image. Median valid g reference-only +0.0078058 and dark +0.0585183. These are **not** physically labelled solid/plume/bulk masks, nor a full v25 execution; temporal MIL solid mask and deeper filtering were omitted. The script, three PNGs and reference notebook remain on X: only.
+4. User-approved independent time-association development: created `Python_code/phase0_time_registration.py`, standard-library-only, explicit source time provenance, raw-to-bin maps, concentration frame associations and output OFV pair-midpoint times/neighbor composition interpolation weights. Refuses source gaps, overlapping bins, missing concentrations, bad IDs/timebases; filename-only clock is **diagnostic-only**, never claimed authoritative. Tests in `tests/test_phase0_time_registration.py` cover 5 Hz and 1 Hz synthetic clocks, bad source timing, gaps and broken association.
+5. Full details: `docs/phase0-plume-segmentation-timing-g0-2026-11-02.md` and earlier `docs/phase0-historical-raw-radiometry-2026-11-01.md`. Scientific codes for density, viscosity, composition mapping, OFV and original notebook were not modified.
+
+## Current durable local workspace
+
+`X:\AI-Lab-Test\Solidification_OFV\analysis_outputs\phase0_scout_2026-11-01` contains all prior radiometric readers, logs and JSON results; now also hash-verified notebook source, WolframScript safe inspection and pilot code, and segmentation PNG overlays/validity masks. TIFFs and original .7z remain outside public repo. Refresh local SHA manifest after all local scripts are finished.
+
+## G0 closure and immediate required evidence
+
+**G0 NOT CLOSED**: numerical 2WCF flow and pixel direction validated; source data accessible; comparison of radiometric alternatives performed. Yet no independently verified liquid composition calibration anchors/fit for these historical acquisitions, physically verified solid/plume/bulk masks, camera clock provenance, exact source-to-filtered/OFV crop/geometry map, or same-acquisition `Conc_In`/PKL field pair exists in the current checked evidence. Do not claim full physical validation or infer closed-system mass/energy conservation.
+
+Next logical engineering step is to validate the strict timestamp contract on a real *verified* acquisition manifest, then inspect the actual manual concentration-vs-luminance procedure and physically annotate source images/masks. The notebook's intensity clustering can become an auxiliary mask proposal after independent labels and perturbation tests—not an unsupervised source of quantitative composition.
