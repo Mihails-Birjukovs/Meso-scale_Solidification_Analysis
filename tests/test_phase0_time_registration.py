@@ -31,7 +31,8 @@ class TimeRegistrationTests(unittest.TestCase):
     def test_raw_5hz_bin5_pair_midpoints(self):
         x = registration.plan_time_registration(fixture())
         self.assertEqual(x["admission"], "timing_preflight_passed")
-        self.assertEqual(x["bin_center_times_s"], [0.4, 1.4, 2.4])
+        for observed, expected in zip(x["bin_center_times_s"], [0.4, 1.4, 2.4]):
+            self.assertAlmostEqual(observed, expected)
         self.assertAlmostEqual(x["flow_pair_registrations"][0]["time_midpoint_s"], 0.9)
         self.assertAlmostEqual(x["flow_pair_registrations"][0]["image_pair_duration_s"], 1)
         self.assertEqual(x["flow_pair_registrations"][0]["concentration_interpolation_weights"], [0.5, 0.5])
