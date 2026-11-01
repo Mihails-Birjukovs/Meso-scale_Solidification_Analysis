@@ -8,6 +8,7 @@ This documentation explains the current public repository, experimental methodol
 
 | Document | Purpose |
 |---|---|
+| [Phase 0 OFV interface contract](phase0-ofv-integration.md) | Pinned 2WCF-SVD source, rights, TIFF staging, coordinate/time manifest, verification gates |
 | [Architecture and workflow](architecture-and-workflow.md) | Current ownership of each notebook/script, two distinct image branches, interfaces to read-only 2WCF-SVD, provenance and time/coordinate conventions |
 | [Current source inventory](current-code.md) | What each current file *actually* does, and methodological relationship to the 2023 publication |
 | [Scientific methods and proposed physics](scientific-methods.md) | X-ray attenuation, mass-fraction mixing, mass continuity, quasi-2D gap profile, gradient/vorticity/Q, energy and enstrophy identities |
