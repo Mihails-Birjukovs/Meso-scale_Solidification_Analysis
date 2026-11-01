@@ -1,0 +1,29 @@
+# Handoff — 2020-02-06 502-frame temporal MIL surrogate and masked-liquid K-medoids
+
+**Date:** 2026-11-02 (Europe/Riga). **Owner approved the study plan.** This is an **append-only** science-state handoff; original raw/historical files and original v25 notebook unchanged. The preceding **draft PR #7 is still unmerged**, and this work is separated in a new **draft docs-only PR #8** for review against `main` (do not merge either without owner approval).
+
+## Source integrity and exact frame mapping
+
+Original private folder `X:\AI-Lab-Test\Solidification_OFV\older_output_examples_Dendrite_Plume_Analysis_v25_NB\Output\2020-02-06`:
+- `Filtered Frames.7z`: **642,503,228 bytes**, SHA-256 `7b69a63678a12648237adede38103e4403fdbf925b81f03f99f51c2a358199e6`. It contains **502** Mathematica-compressed `Filtered Frames/Frame_N.txt` images; working copies of these files total **839,146,660 bytes** after read-only extraction.
+- `Solid Mask Overlays.7z`: **143,978,105 bytes**, SHA-256 `038967116f7ad6e9561c4ff1b9a177877a62281b402a0d37d06b711e7660d1c8`. It contains **502** `Sample_N.jpg` rendered solid-overlay examples.
+- `Filtered Frame IDs.txt` was decoded by local Mathematica 12.1; **exact ID list is `Range[1400,3905,5]`, length 502**. Confirmed the v24 PDF p.8 records `lowerLimit=1400,imageStepSize=5`. Source frame ID is not an independently verified timestamp.
+- Original 37-page PDF is **v24**, not the current repository's v25 notebook. Archived filter objects decode to `Image`, Real32, **762×527**. Archived JPEG overlays are **1500×1037** and are not binary manual truth.
+
+## Completed native Mathematica experiments on authorized X:
+
+1. `surrogate_2020_02_06_mil_replay.wls` decoded all 502 selected filtered frames and calculated a temporally filtered **surrogate MIL**, with v24 2020-02-06 parameters `thresholdFactor=17.5,bias=22.5,power=1,size=25`, `TotalVariationFilter weight=.01/500 iterations`. Raw surrogate MIL `0.1795165–0.3881043`, dynamic thresholds `0.9330743–0.9672201`. **Not exact original MIL**, because the original was computed from the full upstream `images` series and raw flatfield reference, which are absent from this checked example corpus.
+2. `full_502_surrogate_mil_masks.wls` generated all **502** candidate binary solid masks and saved source-index, thresholds, area, and adjacent saved-frame IoU data. First/last candidate solid fraction **0.0196701 / 0.6441727**, max **0.6473228**; median consecutive saved-frame IoU **0.9641337**, range **0.8727706–0.9759908**. The area fraction decreases between **160 of 501** adjacent saved frames. These numbers are internal consistency only, not validated physical mask accuracy.
+3. Extracted historical overlays at saved frames 1,50,250,502. Generated side-by-side qualitative comparison on X:. Main dendritic structures visibly correspond, but fine features and boundaries differ; JPEG was resized only for display, **no pixelwise overlap metrics** against historical rendered overlays were calculated.
+4. True liquid-only **sampled 1D** `ClusteringComponents[...,K,Method->"KMedoids"]` sensitivity on a fixed 300×300 ROI (1-based rows 101..400, columns 231..530): frame 250 has 71,184 candidate liquid pixels; frame 502 31,605. `K={9,12,16,24,32}`, two frames × none/Gaussian1 and frame 502 × Gaussian3/Median1/Nonlocal1x15/Bilateral3x21: **40 successful tests**, with class populations summing to liquid-only count for every case. Medoids trained on at most 2,000 seeded *liquid-only* pixel values; class 0 reserved for excluded solid. Frame502 unfiltered RMSE within candidate liquid in source normalized units goes from **0.00319388** (K=9) to **0.000924993** (K=32); median1 from **0.00326593 to 0.00106092**, nonlocal from **0.00470393 to 0.00156168**. Other filters/values in public derived-data report. Different filter RMSEs are **not physically comparable accuracy scores**, because filters change target signal, and decreasing quantization error with K does **not** establish plume physics or concentrations.
+5. An independent Python standard-library QA script validated full source ID mapping, output mask count=502, 40 class-population totals and computed the mask temporal statistics; saved `2020-02-06_surrogate_full_replay_qa.json` for reproducible results.
+
+## Hash and output ledger
+
+`X:\AI-Lab-Test\Solidification_OFV\analysis_outputs\older_v25_examples_audit_2026-11-02\PHASE0_FULL_2020_SHA256_MANIFEST.csv` contains hashes for **1,147 files** and **861,180,916 bytes** of local analysis objects (raw filtered copies, derived masks/plots and scripts; excludes self-recursive manifest). SHA-256 of the manifest: `f66f2c9f78cba7ac593f175a035f20c503ffde2f16fc3d0ac34bb722c27a787c`. All originals remain untouched; these script/figure/data objects have not been published.
+
+## Important scientific gates
+
+**G0 remains OPEN.** Missing: full original 2020 raw image sequence to reproduce original MIL input and reference flat-field; independently annotated binary solid mask truth for pixel-level accuracy; calibrated solid/liquid/plume physical and radiometric region labels; confirmed original camera clock and source crop; source-specific concentration anchor (P) values; same-source quantitative composition+OFV pair. The saved historical outputs are a **development/visual regression reference**, not ground truth. Further development should prioritize original source image recovery and manual held-out segmentation annotations *before* automatic mask or plume-method admission.
+
+Public text-only detailed report: `docs/phase0-2020-02-06-temporal-mil-surrogate-and-masked-liquid-kmedoids-2026-11-02.md`. Relevant user Library `/Tools` protocols actually consulted: current scientific validation/benchmarking, Wolfram Language Engineering, GitHub Repository Workflows, central Tools router. No new toolkit was installed. Do not merge draft PRs without owner approval.
