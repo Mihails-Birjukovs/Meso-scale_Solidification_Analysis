@@ -1,6 +1,6 @@
 # Phase 0 — Representative radiograph and coordinate-sign evaluation (2026-11-01)
 
-**Status:** Source-matched independent diagnostic plus a focused follow-on code correction, **not a full upstream execution**. The revised postprocessor has not yet been exercised with a calibrated experimental Ga–In concentration/PKL pair. G0 remains open.
+**Status:** 80-frame independent diagnostic, followed by **execution of the exact pinned upstream SVD and optical-flow numerical functions** using archived run parameters and comparison with the original saved PKLs. The optional WXF and video production stages were not re-run. A focused follow-on coordinate correction is proposed on this branch; full experimental registration remains outstanding. The revised postprocessor has not yet been exercised with a calibrated experimental Ga–In concentration/PKL pair. G0 remains open.
 
 ## Source and data identities
 
@@ -76,7 +76,28 @@ This archive contains exactly **79 PKL** vector files indexed `velocity_field_00
 
 The archived output uses *SVD filtering and 3-pixel sparse sampling*, unlike the earlier source-matched diagnostic (which did not apply SVD and used 7-pixel sampling). The two computations must **not** be treated as an exact numerical reproduction or a quantitative algorithm-regression comparison.
 
-This establishes the original **saved-data interface** against real archived outputs and supports the coordinate convention documented above. However, it **does not establish the exact upstream generating commit**, measured time axis, physical flow direction, quantitative concentration field registration, or any energy budget. The original upstream program was **not re-executed** in the current runtime.
+This establishes the original **saved-data interface** against real archived outputs and supports the coordinate convention documented above. However, it **does not establish the exact upstream generating commit**, measured time axis, physical flow direction, quantitative concentration field registration, or any energy budget. At this point in the chronological audit the upstream code had not yet been executed; the **exact numerical-core replay documented below was subsequently completed**.
+
+
+## Exact pinned upstream numerical-core re-execution and archived-output comparison
+
+**New evidence obtained on 2026-11-01 after the original archived-output inspection.** An owner-accessible Google Drive copy of `2WCF-SVD_v4_4.py`, Drive file ID `1NeCn2W6csCIdjZuybL6YPF-yhD4xzVOD`, was downloaded to an isolated local runtime. Its Git blob hash is **exactly `52d20820314a1e4283a325dc34e899191bf267b4`**, the same as upstream commit `27659ae0e0f798189e1fc7c4516453374ad3c9eb`. The source file was **not edited**.
+
+The original `svd_filter_images` and `compute_flow_pair` functions were imported from that exact script and **executed directly** on all 80 TIFFs, with the actual archived settings `USE_SVD=true`, `KillIDs=[0]`, `ArrowDensityStep=3`, `MedianOfMeansGroupSize=1000`, `VelocityInversion=-1` and all other settings read from the archived `parameters.json`. This is **not** the independent source-matched reproduction above; it executes the original numerical code. The container did not have `wolframclient`, so a non-calling import shim was used exclusively for the optional WXF serialization module; its export function was never called. Neither the original `run_optical_flow` output-writing/video stage nor the WXF writer was re-executed.
+
+**Comparison against all actual archived PKL vectors:** 79/79 pairs; 64,731 original vectors and exactly **64,731 rerun vectors**, with every (x,y) location matching. The median of the 79 per-pair vector differences' RMSE was **1.519×10⁻⁷ pixels**; the 95th percentile **3.293×10⁻⁷ pixels**. The median per-pair mean-absolute-vector difference was **6.156×10⁻⁸ pixels**. Median reproduced forward/backward QC error was **0.11911058 pixel**, matching the archived **0.11911057 pixel**. Tested in OpenCV 4.13.0, NumPy 2.3.5, with numerical results effectively identical to the archived outputs.
+
+| Verified original-core replay metric | Result |
+|---|---:|
+| Exact numerical-source identity | Git blob SHA matched |
+| SVD-filtered images / flow pairs | 80 / 79 |
+| Original vs computed vector count | 64,731 / 64,731 |
+| Shared sampled (x,y) locations | **100%** |
+| Median per-pair vector RMSE | **1.519×10⁻⁷ px** |
+| 95th percentile per-pair vector RMSE | **3.293×10⁻⁷ px** |
+| Median original vs recomputed FB error | 0.11911057 vs 0.11911058 px |
+
+**Interpretation:** This is strong, independent **numerical reproducibility evidence** for the original upstream SVD+OFV numerical core on this specific 80-frame sequence. It does not show that the *historic* archived run explicitly recorded or was built from the same Git commit (because its manifest lacks that identity); rather, the matched values make the generating implementation substantially more identifiable. The full WXF/video/output-writing stages were not rerun. Physical acquisition times, same-acquisition calibrated concentration images, and the true full-cell spatial origin remain unverified; therefore scientific **G0 acceptance still requires** experimental registration checks and downstream integration.
 
 ## Focused coordinate-sign correction on this feature branch
 
