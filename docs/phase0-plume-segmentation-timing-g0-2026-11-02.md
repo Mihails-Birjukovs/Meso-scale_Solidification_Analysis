@@ -57,6 +57,19 @@ For raw frame-center times `0,0.2,0.4,...,2.8` s, three five-frame bins have tim
 
 Run the offline unit suite with `python -m unittest discover -s tests -p "test_*.py" -v`. No scientific frame data are needed. The module does not certify physical spatial registration or full concentration interpolation.
 
+## Second archive spot check — averaged calibration TIFFs are NOT source-equivalent
+
+The `2014-04-15-Exp2.7z` archive includes TIFFs named `ga-25in-ref2.txt, Averaged.tif` and `ga-25in-dark2.txt, Averaged.tif`. The exact owner source archive was read through native 7-Zip; four first/last/source-average TIFFs were selectively extracted, and then **one original individual reference TIFF** and **one individual dark-current TIFF** were additionally extracted with exact `-i!full/internal/path` selectors. All six are 762×499 uint16 samples. The archived averaged reference and dark fields have mean stored counts ~28,718 and ~28,329, while the selected original reference and dark exposures have mean counts ~57,832 and ~52,182 respectively. Pointwise average/single ratios are not constant (median ~0.377 for reference and ~0.407 for dark), so the archived averages **cannot be assumed interchangeable with the source exposures or recovered by blindly doubling them**. The actual historical averaging/export method is not yet established. This alone prohibits unreviewed quantitative use of those averaged files.
+
+For two experimental frames, the admitted dark-corrected fractions and median `g` differ markedly depending on which TIFF reference/dark pair is selected:
+
+| Experiment frame | Using archived 'Averaged' ref/dark: fraction / median g | Using one original ref/dark: fraction / median g |
+|---|---|---|
+| First | 0.6233 / -1.5674 | 0.7976 / +0.00149 |
+| Last | 0.6171 / -1.4832 | 0.6048 / +0.45867 |
+
+The underlying **reference-only** signal `g=-ln(I/R)` on the single original reference has median ~+0.00054 (first) and +0.06022 (last). These are all *diagnostic, uncalibrated* optical densities; neither a single reference/dark exposure nor a file labelled 'Averaged' is an automatically validated radiometric correction. The original reference/dark sets and detector dark stability must be checked in aggregate before interpreting these fields. Analysis JSON and scripts remain on the authorized X: workspace; no experimental pixels were published in GitHub.
+
 ## G0 gate decision
 
 | G0 item | Current state |
