@@ -84,6 +84,27 @@ The 12 colorized diagnostic PNGs, validity mask, executed `.wls` script and JSON
 
 **Recommended controlled follow-up:** after reconstructing and validating full-sequence MIL solid masks, repeat a fixed `K={9,12,16,24,32}` (or similar) sweep with/without physical solid masks and alternative pre-filters (median, bilateral, nonlocal, edge-preserving; avoid smoothing away faint plume gradients). Compare stability over time, held-out labels and manual anchor areas; measure K-medoids sensitivity to camera/radiometry choice and take only liquid-region masks into composition estimation. Never automatically substitute cluster numbers for chemical mass fractions.
 
+## Additional original-stack pairs recovered from the six-archive census
+
+The complete six-archive filename census identified *two additional original reference + dark stack pairs*, so four independently reconstructed reference/dark pairs are now available on X:. A crucial provenance detail: the `2011-09-19.7z` archive contains both original images under `2011-09-19/2011-09-19` **and cropped-left-side derived duplicates** under `2011-09-19/2011-09-19-cropped-left-side`. Its first naive `ref1`/dark enumeration counted 202 of each, but **only 101 reference and 101 dark are original full-frame measurements**. Derived crops were not mixed into the raw averages. `2011-09-19` `ref2` and `2013-01-10` `ref2`/`ref3` are distinct reference recording groups, intentionally excluded from the `ref1+dark1` means until their experimental correspondence is justified.
+
+| Original source acquisition and paired input group | Raw mean R frames | Raw mean D frames | Decoded source size | Reconstructed R / D, counts | Pixels with R>D |
+|---|---:|---:|---|---|---:|
+| **2011-09-19 ref1 + dark1** (uncropped originals only) | 101 | 101 | 755×444 | 54,106.876 / 53,218.198 | **65.35%** |
+| **2013-01-10 ref1 + dark1** | 103 | 103 | 756×542 | 57,247.210 / 54,911.807 | **67.80%** |
+| 2014-01-15 ref1 + dark1 | 113 | 105 | 760×560 | 58,230.418 / 55,592.473 | 72.30% |
+| 2014-04-15 Exp2 ref2 + dark2 | 108 | 120 | 762×499 | 57,847.084 / 54,317.608 | 77.22% |
+
+For the two newly reconstructed acquisitions, frame-wide reference mean ranges were **54,059.20–54,165.79** (2011) and **57,192.33–57,286.92** (2013); corresponding dark-frame mean ranges were **51,099.15–54,518.44** and **54,323.44–55,181.02**. All selected source TIFFs were extracted only as read-only-analysis working copies after exact full-path 7-Zip selection preflight; originals remain untouched. Executions of the **GitHub branch's own hash-verified generic reconstruction script** saved three float32 TIFFs plus per-source SHA-256 manifest and per-exposure stats, respectively:
+
+- `reconstructed_pr7_2011-09-19_ref1_dark1`: R, D, R−D TIFFs and `manifest.json`;
+- `reconstructed_pr7_2013-01-10_ref1_dark1`: R, D, R−D TIFFs and `manifest.json`;
+- `reconstructed_pr7_2014-04-15-Exp2`: R, D, R−D TIFFs and `manifest.json`.
+
+For `2014-04-15 Exp2` the new GitHub implementation's two reconstructed mean TIFFs are **byte-for-byte SHA-256 identical** to the original, independently developed local reconstruction prototype: reference `ab868a99d6db977b73775efbae1b146bb5f243fc567b1b3e1b0b07b558cc2d91`, dark `235cfb0812e58fc06bf6a4ecda71e5c169d0d704ad1347d6b3ff393fe30fb946`. Generic helper script downloaded from the PR #7 branch was verified with Git blob `0539407659e93dec9f4173a8bf23438dbdf751ef` before running. Thus this **specific** data pair has cross-script byte-level reproducibility as well as synthetic tests.
+
+The other two archives, `2011-09-09` and `2014-04-04`, include original beam/reference TIFFs but no matching dark-exposure TIFF groups identified in the archive census. They remain candidates for **reference-only** processing; do not fabricate dark profiles. The notebooks' `2011-09-19-Exp2` 23.7 µm/pixel value must not be assigned to `2011-09-19 ref1` without confirming the experiment/crop correspondence. The new original-background data do not close G0 because no detector transfer-function stability, valid physical mask, or calibrated same-acquisition composition pair has been accepted.
+
 ## G0 decision
 
 **G0 remains OPEN** for reliable experimental physical interpretation. We now have dataset-specific notebook exposure/pixel metadata, independent full-stack mean reference and dark TIFFs for two experiments, isolated K-medoids level-sensitivity tests, and previously validated OFV core/direction and a separate synthetic-tested temporal association tool. Still missing: source-specific camera clock and raw→processed→OFV frame/crop mapping, physical chamber/cell mask, validated solid/plume/liquid masks, original measurement-backed reference and dark transfer/averaging provenance, registered 25/98.6/5–10 wt.% calibration *P* anchor values and a matched same-run quantitative concentration/velocity pair. Full mass/energy validation belongs after G0.
