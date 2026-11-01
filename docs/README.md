@@ -8,6 +8,7 @@ This documentation explains the current public repository, experimental methodol
 
 | Document | Purpose |
 |---|---|
+| [Historical v24 MIL / plume example provenance](phase0-historical-v24-mil-plume-example-audit-2026-11-02.md) | Experimental MIL overrides, K-medoids/denoising settings, archived overlays and source-mask registration gates |
 | [Phase 0 full raw reference/dark reconstruction & K-medoids sweep](phase0-reconstructed-backgrounds-and-kmedoids-2026-11-02.md) | Dataset-specific notebook pixel/exposure metadata, 2 reconstructed detector means, archived-average mismatch, K=9/16/24 tests |
 | [Phase 0 notebook segmentation and time registration](phase0-plume-segmentation-timing-g0-2026-11-02.md) | Original v25 MIL/KMedoids mechanism, comparative radiometry, timestamp gating, and outstanding G0 criteria |
 | [Phase 0 historical raw TIFF and timing audit](phase0-historical-raw-radiometry-2026-11-01.md) | 2011 source example, 2014 dark/reference sensitivity, nominal 1-Hz raw timestamp checks and G0 blockers |
