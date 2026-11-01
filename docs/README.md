@@ -8,6 +8,7 @@ This documentation explains the current public repository, experimental methodol
 
 | Document | Purpose |
 |---|---|
+| [Phase 0 historical raw TIFF and timing audit](phase0-historical-raw-radiometry-2026-11-01.md) | 2011 source example, 2014 dark/reference sensitivity, nominal 1-Hz raw timestamp checks and G0 blockers |
 | [Phase 0 expanded Drive dataset census](phase0-drive-dataset-census-2026-11-01.md) | Alternative processed series, raw MSc archive transfer limit, and archived PhD field comparisons |
 | [Phase 0 final integration preflight](phase0-final-integration-2026-11-01.md) | Verified all 79 archived vector outputs, candidate concentration rejection and remaining G0 admission gates |
 | [Representative OFV image-sequence evaluation](phase0-representative-sequence-2026-11-01.md) | 80 real filtered frames, synthetic translation controls, tested sign conventions and G0 gaps |
