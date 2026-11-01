@@ -18,6 +18,9 @@ import sys # To exit from the loop and stop work
 import warnings # Paslēpj warning
 warnings.filterwarnings("ignore", message="numpy.core.numeric is deprecated")
 import Divergence_Free_Interpolant as dfi
+from ofv_coordinate_conventions import (
+    require_inversion, forward_image_components, physical_vorticity_from_image_derivatives
+)
 
 # %% ====================================================================================
 # Input:
@@ -104,6 +107,7 @@ params_path = os.path.join(os.path.dirname(FLOW_FOLDER), "parameters.json")
 with open(params_path) as f:
     params = json.load(f)
 arrow_step = params["ArrowDensityStep"]
+velocity_inversion = require_inversion(params)
 print("ArrowDensityStep:", arrow_step)
 
 # %% ============================================================
@@ -266,9 +270,12 @@ for frame_index in range(n_frames):
     
     # ========================================================
     # Convert to physical velocity
-    scale = delta_x / delta_t
-    u = u_pix * scale
-    v = v_pix * scale
+    # 2WCF saves BOTH components multiplied by VelocityInversion.
+    # Keep vectors and positions in IMAGE coordinates (x-right, y-down).
+    u, v = forward_image_components(
+        u_pix, v_pix, inversion=velocity_inversion,
+        m_per_pixel=delta_x, pair_dt_s=delta_t
+    )
 
     # ========================================================
     # Grid reconstruction (grid + interpolation)
@@ -406,8 +413,8 @@ for frame_index in range(n_frames):
     positions_interp = positions_all.copy()
     vectors_interp = vectors_all.copy()
     
-    # Apgriežam vertikālo ātruma komponenti
-    vectors_interp[:, 1] *= -1
+    # No single-component sign flip: all vectors and grid positions use image coordinates.
+    # Production and hold-out RBFs now receive the same component convention.
     X_interp = X
     Y_interp = Y
     
@@ -788,7 +795,8 @@ for frame_index in range(n_frames):
     
     # ========================================================
     # Vorticity
-    omega = dv_dx - du_dy
+    # Physical +z vorticity, although the image-grid y axis points DOWN.
+    omega = physical_vorticity_from_image_derivatives(du_dy, dv_dx)
     omega_squared = omega**2 
     # Lokālā viskozā disipācija [W/m^3]
     dissipation = 2 * mu_small * (du_dx**2 + dv_dy**2 + 0.5 * (du_dy + dv_dx)**2)

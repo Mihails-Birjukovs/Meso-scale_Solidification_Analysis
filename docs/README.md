@@ -8,6 +8,7 @@ This documentation explains the current public repository, experimental methodol
 
 | Document | Purpose |
 |---|---|
+| [Representative OFV image-sequence evaluation](phase0-representative-sequence-2026-11-01.md) | 80 real filtered frames, synthetic translation controls, tested sign conventions and G0 gaps |
 | [Phase 0 OFV interface contract](phase0-ofv-integration.md) | Pinned 2WCF-SVD source, rights, TIFF staging, coordinate/time manifest, verification gates |
 | [Architecture and workflow](architecture-and-workflow.md) | Current ownership of each notebook/script, two distinct image branches, interfaces to read-only 2WCF-SVD, provenance and time/coordinate conventions |
 | [Current source inventory](current-code.md) | What each current file *actually* does, and methodological relationship to the 2023 publication |
