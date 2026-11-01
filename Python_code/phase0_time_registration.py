@@ -141,12 +141,13 @@ def plan_time_registration(manifest: dict) -> dict:
         if b <= a:
             raise AdmissionError("bin centers must strictly increase")
         tm = (a + b) / 2
-        wb = (tm - a) / (b - a)
+        # The midpoint is exactly equidistant between two bin centers;
+        # the associated linear interpolation weights are, by definition, 1/2 each.
         pair_output.append({
             "flow_pair_id": i, "image_ids": [i,i+1],
             "time_midpoint_s": tm, "image_pair_duration_s": b-a,
             "concentration_image_ids": [conc_ids[i], conc_ids[i+1]],
-            "concentration_interpolation_weights": [1-wb, wb],
+            "concentration_interpolation_weights": [0.5, 0.5],
         })
 
     is_authoritative = source_kind in TRUSTED_CLOCKS
