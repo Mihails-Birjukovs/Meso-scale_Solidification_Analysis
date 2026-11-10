@@ -48,7 +48,7 @@ def source_frame_files(root: Path, folder: str, ext: str, expected: int) -> list
     return [found[k] for k in range(1, expected + 1)]
 
 
-def tiff_shape_and_dtype(path: Path) -> tuple[int, int, int]:
+def tiff_shape_and_dtype(path: Path) -> tuple[int, int, int, int]:
     """Read classic TIFF IFD header tags only: width, height and bits/sample."""
     with path.open("rb") as fh:
         header = fh.read(8)
@@ -81,9 +81,12 @@ def tiff_shape_and_dtype(path: Path) -> tuple[int, int, int]:
             raise AdmissionError("Missing TIFF geometry or sample-depth tag") from e
         if width <= 0 or height <= 0 or bits != 16:
             raise AdmissionError("Only positive-geometry uint16 TIFF admitted")
-        if tags.get(259, 1) != 1 or tags.get(277, 1) != 1 or tags.get(339, 1) != 1:
+        # Header-only inventory. Real archive TIFFs use old-style Deflate
+        # (Compression=32946); never silently decode TIFF pixels here.
+        compression = tags.get(259, 1)
+        if compression not in (1, 5, 8, 32946) or tags.get(277, 1) != 1 or tags.get(339, 1) != 1:
             raise AdmissionError("Unsupported TIFF compression, channel count or sample type")
-    return width, height, bits
+    return width, height, bits, compression
 
 
 def png_shape(path: Path) -> tuple[int, int, int, int]:
@@ -124,7 +127,7 @@ def admit(root: Path, case: dict, *, include_all_hashes: bool = True) -> dict:
     shapes_m = {png_shape(p) for p in masks}
     if len(shapes_i)!=1 or len(shapes_m)!=1:
         raise AdmissionError("Within-series image geometry/encoding inconsistency")
-    width,height,bits = next(iter(shapes_i))
+    width,height,bits,compression = next(iter(shapes_i))
     maskw,maskh,maskdepth,maskcolor = next(iter(shapes_m))
     if [width,height] != case["expected_image_width_height"]:
         raise AdmissionError("Unexpected input TIFF geometry")
@@ -142,7 +145,8 @@ def admit(root: Path, case: dict, *, include_all_hashes: bool = True) -> dict:
       "schema":"ga-in-calibration-case-inventory/v1",
       "case_id":case["id"],
       "status":"SOURCE_INVENTORY_VERIFIED_NOT_CALIBRATION_ADMITTED",
-      "image_format":{"width":width,"height":height,"bits_per_sample":bits},
+      "image_format":{"width":width,"height":height,"bits_per_sample":bits,
+                      "compression_tag":compression,"pixel_data_decoded_by_this_tool":False},
       "historical_mask_format":{"width":maskw,"height":maskh,
                                  "png_bit_depth":maskdepth,"png_color_type":maskcolor},
       "source_frame_id_range":{"first":sid[0],"last":sid[-1],
