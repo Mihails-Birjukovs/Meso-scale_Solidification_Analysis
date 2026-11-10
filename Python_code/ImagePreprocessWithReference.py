@@ -68,6 +68,10 @@ images = load_image_folder(IMAGES_FOLDER)
 reference_images = load_image_folder(REFERENCE_FOLDER)
 print("Image shape ", images.shape)
 print("Reference image shape", reference_images.shape)
+# Check image and reference spatial dimensions
+if images.shape[1:] != reference_images.shape[1:]:
+    raise ValueError("Measurement and reference images have different spatial dimensions!")
+print("Spatial dimensions match: OK")
 
 # =============================================================================
 # See picture examples
@@ -85,7 +89,8 @@ plt.show()
 
 
 # =============================================================================
-# %% Interactive slider (palaid šo šūnu atsevišķi un apskaties attēlus)
+# %% Interactive slider (run to look at pictures before clipping)
+# if you dont see the slide, try this in console: %matplotlib qt and press Enter
 # =============================================================================
 plt.ion()
 fig, ax = plt.subplots(figsize=(8,6))
@@ -150,8 +155,13 @@ if x1 < 0 or y1 < 0:
     raise ValueError("Crop coordinates cannot be negative.")
 if x2 > images.shape[2] or y2 > images.shape[1]:
     raise ValueError("Crop coordinates exceed image dimensions.")
+if x2 <= x1 or y2 <= y1:
+    raise ValueError("Invalid crop coordinates: x2 must be greater than x1 "
+        "and y2 must be greater than y1.")
 if start_frame < 0 or end_frame >= len(images):
     raise ValueError("Frame range outside available images.")
+if end_frame < start_frame:
+    raise ValueError("Invalid frame range: end_frame must be >= start_frame.")
 
 # =============================================================================
 # Create cropped images
@@ -226,13 +236,14 @@ with open(json_path, "w") as file:
 print("Saved crop parameters:", json_path)
 
 
+
 # %% Flat field correction
 # =============================================================================
 referenceFrame = croppedReferenceImages.astype(np.float32).mean(axis=0)
 print("Reference frame shape:", referenceFrame.shape)
 print("Reference frame min/max:", referenceFrame.min(), referenceFrame.max())
-referenceFrame_safe = np.where(referenceFrame == 0, 1e-6, referenceFrame)
-
+# we canot replace zero values just by 1e-6...
+# referenceFrame_safe = np.where(referenceFrame == 0, 1e-6, referenceFrame)
 zero_reference = np.sum(referenceFrame == 0)
 
 print("Zero reference pixels:", zero_reference)
@@ -243,10 +254,22 @@ print("Fraction:", zero_reference / referenceFrame.size)
 # I_corr = I / I0  (bez dark-current korekcijas, jo tev tādu datu nav —
 # tas ir zināms un pieņemts tuvinājums, ir minēts darba metodoloģijā)
 
-I_corr = croppedImages.astype(np.float32) / referenceFrame_safe
+# Convert measurement images to float32
+I_measurement = croppedImages.astype(np.float32)
+
+# Check where measurement and reference intensities are valid
+valid_mask = (np.isfinite(I_measurement) & (I_measurement > 0) &
+    np.isfinite(referenceFrame)[None, :, :] & (referenceFrame[None, :, :] > 0))
+
+# Create an array filled with NaN
+I_corr = np.full(I_measurement.shape, np.nan, dtype=np.float32)
+
+# Divide only where both intensities are valid
+np.divide(I_measurement, referenceFrame[None, :, :],
+    out=I_corr, where = valid_mask)
 print("I_corr shape:", I_corr.shape)
 print("I_corr value range:", I_corr.min(), I_corr.max())
-
+print("I_corr value range:", np.nanmin(I_corr), np.nanmax(I_corr))
 
 
 # %% Diagnostic: invalid normalized intensities
@@ -259,18 +282,16 @@ print("Non-finite pixels:", np.sum(~np.isfinite(I_corr)))
 print("Zero pixels:", np.sum(I_corr == 0))
 print("Negative pixels:", np.sum(I_corr < 0))
 
-if np.any(np.isfinite(I_corr)):
-    finite_values = I_corr[np.isfinite(I_corr)]
-    print("Finite I_corr min:", finite_values.min())
-    print("Finite I_corr max:", finite_values.max())
-    
-    
-    
-    
-# %%
+valid_values = I_corr[np.isfinite(I_corr) & (I_corr > 0)]
 
+if valid_values.size > 0:
+    print("Valid I_corr min:", valid_values.min())
+    print("Valid I_corr max:", valid_values.max())
+else:
+    raise ValueError("No valid I_corr values found!")
+    
 # =============================================================================
-# Quick preview of I_corr
+# %%Quick preview of I_corr
 plt.figure(figsize=(12,5))
 plt.subplot(1,2,1)
 plt.imshow(croppedImages[0], cmap="gray")
@@ -283,84 +304,39 @@ plt.title("I / I0")
 plt.axis("off")
 plt.show()
 
-# %%
-# Cik daudz un kur ir problemātiskie pikseļi?
-zero_count = np.sum(I_corr == 0)
-negative_count = np.sum(I_corr < 0)
-print("Nulles vērtību skaits:", zero_count)
-print("Negatīvu vērtību skaits:", negative_count)
-
-if negative_count > 0:
-    neg_values = I_corr[I_corr < 0]
-    print("Negatīvo vērtību diapazons:", neg_values.min(), "līdz", neg_values.max())
-    
-# Pārbaudi, vai I_corr datu tips ir float (nevis uint)
+# %% Check data type of I_corrr, is it float (not uint)
 print("I_corr dtype:", I_corr.dtype)
 
-# %%
-problem_pixels = np.argwhere(I_corr == 0)
-unique_positions = np.unique(problem_pixels[:, 1:], axis=0)  # tikai (y, x)
-print("Unikālu problemātisko pikseļu pozīciju skaits:", len(unique_positions))
-print("Pozīcijas:", unique_positions)
 # %% Optical density
 # =============================================================================
 g_raw = -np.log(I_corr)   # naturāllogaritms
-print("g_raw value range:", g_raw.min(), g_raw.max())
+print("g_raw value range:", np.nanmin(g_raw), np.nanmax(g_raw))
 
 plt.figure(figsize=(6,5))
 plt.imshow(g_raw[0], cmap="viridis")
 plt.colorbar(label="g")
-plt.title("Optical density, frame 101")
+plt.title("Optical density, first cropped frame")
 plt.axis("off")
 plt.show()
 
 # %% Diagnostika - kur atrodas negatīvās g vērtības
 # =============================================================================
 negative_mask = g_raw < 0
-print("Negatīvo pikseļu daļa:", negative_mask.mean())
+print("Negative pixel part:", negative_mask.mean())
 plt.figure(figsize=(12,5))
 plt.subplot(1,2,1)
 plt.imshow(g_raw[0], cmap="RdBu_r", vmin=-0.1, vmax=0.1)
 plt.colorbar(label="g")
-plt.title("g (sarkans = pozitīvs, zils = negatīvs), frame 1")
+plt.title("g (red = positive, blue = negative), frame 1")
 plt.axis("off")
 
 plt.subplot(1,2,2)
 plt.hist(g_raw[0].ravel(), bins = 100)
 plt.axvline(0, color='r', linestyle='--')
 plt.xlabel("g")
-plt.title("g histogramma, frame 1")
+plt.title("g histogram, frame 1")
 plt.show()
 
-
-# %%
-print(f"I_corr minimums: {np.nanmin(I_corr):.6f}")
-print(f"I_corr maksimums: {np.nanmax(I_corr):.6f}")
-print(f"Pikseļi ar I_corr <= 0: {np.sum(invalid_mask)}")
-
-# Pārbaude pēc logaritma
-negative_g_mask = np.isfinite(g_raw) & (g_raw < 0)
-
-print(f"g minimums: {np.nanmin(g_raw):.6f}")
-print(f"g maksimums: {np.nanmax(g_raw):.6f}")
-print(f"Negatīvo g pikseļu skaits: {np.sum(negative_g_mask)}")
-print(f"Negatīvo g īpatsvars: {100 * np.mean(negative_g_mask):.2f}%")
-# %% Uzsvērts kur tieši ir tie pzoitīvie rezultāti.
-frame = g_raw[0]
-positive_mask = frame > 0
-
-# Bāzes attēls pelēkā skalā
-plt.figure(figsize=(8,6))
-plt.imshow(frame, cmap="gray")
-# Overlay: oranžs tikai tur, kur positive_mask == True, citur caurspīdīgs
-overlay = np.zeros((*frame.shape, 4))  # RGBA
-overlay[positive_mask] = [1.0, 0.55, 0.0, 0.6]  # oranžs, alpha=0.6 (caurspīdīgums)
-overlay[~positive_mask] = [0, 0, 0, 0]  # pilnīgi caurspīdīgs, kur nav pozitīvs
-
-plt.imshow(overlay)
-plt.title("Oranžs = g > 0 (pozitīvs)")
-plt.axis("off")
-plt.show()
 
 # %% Temporal binning (on I_corr)
 # =============================================================================
@@ -377,9 +353,9 @@ dt0 = 0.2 # oriģinālais kadra ilgums [s]
 dt_eff = bin_size * dt0
 f_eff = 1.0 / dt_eff
 
-print(f"Kadri sākotnēji: {n_frames}, izmesti (atlikums): {discarded}")
-print(f"Binoti kadri: {I_corr_binned.shape[0]}")
-print(f"dt: {dt_eff} s, kadru frekvence: {f_eff} Hz")
+print(f"Initial frames: {n_frames}, dropped out (what is left): {discarded}")
+print(f"Binned frames: {I_corr_binned.shape[0]}")
+print(f"dt: {dt_eff} s, frame frequency: {f_eff} Hz")
 
 
 # %% Spatial downsampling (Lanczos, on binned I_corr, still linear domain)
@@ -390,26 +366,42 @@ height, width = I_corr_binned.shape[1:]
 target_size = (round(width / downsample_factor), round(height / downsample_factor))  # cv2: (w, h)
 
 I_corr_downsampled = np.stack([
-cv2.resize(frame, target_size, interpolation=cv2.INTER_LANCZOS4)
+cv2.resize(frame, target_size, interpolation = cv2.INTER_AREA)
     for frame in I_corr_binned])
 
 print("Downsampled shape:", I_corr_downsampled.shape)
 
-# Lanczos ringing pārbaude - negatīvas/nulles vērtības PIRMS log
-n_bad = np.sum(I_corr_downsampled <= 0)
-print("Negatīvi/nulles pikseļi pēc Lanczos:", n_bad)
+# Check invalid intensities after downsampling
+n_bad = np.sum(~np.isfinite(I_corr_downsampled) | (I_corr_downsampled <= 0))
+print("Invalid pixels after downsampling:", n_bad)
 
-eps = 1e-6
-I_corr_downsampled_safe = np.clip(I_corr_downsampled, eps, None)
+if n_bad > 0:
+    raise ValueError("Invalid intensities after downsampling!")
+
+I_corr_downsampled_safe = I_corr_downsampled
+
 dx0 = 17.5  # µm/px
 dx_eff = downsample_factor * dx0
-print(f"Reālais pikseļa izmērs: {dx_eff} µm/px")
-
+print(f"Effective pixel size: {dx_eff} µm/px")
 
 # %% Optical density - uz tā paša režģa, ko izmantos ātruma lauks
 # =============================================================================
 g_downsampled = -np.log(I_corr_downsampled_safe)
 print("g_downsampled value range:", g_downsampled.min(), g_downsampled.max())
+
+# Find global minimum and maximum of g_downsampled
+g_min = np.nanmin(g_downsampled)
+g_max = np.nanmax(g_downsampled)
+
+# Find their positions (frame, y, x)
+min_pos = np.unravel_index(np.nanargmin(g_downsampled), g_downsampled.shape)
+max_pos = np.unravel_index(np.nanargmax(g_downsampled), g_downsampled.shape)
+
+print(f"Global g minimum: {g_min:.6f}")
+print(f"Global g maximum: {g_max:.6f}")
+
+print("Minimum position (frame, y, x):", min_pos)
+print("Maximum position (frame, y, x):", max_pos)
 
 plt.figure(figsize=(6,5))
 plt.imshow(g_downsampled[0], cmap="viridis")
@@ -418,38 +410,321 @@ plt.title("Optical density, frame 1")
 plt.axis("off")
 plt.show()
 
-print("Pirmsapstrādes downsampled g vērtību diapazons:", g_downsampled.min(), g_downsampled.max())
 print("g satur NaN/Inf:", np.any(~np.isfinite(g_downsampled)))
 
 # %% Diagnostika - kur atrodas negatīvās g vērtības
 # =============================================================================
 negative_mask = g_downsampled < 0
-print("Negatīvo pikseļu daļa:", negative_mask.mean())
+print(f"Negative g fraction: {100 * negative_mask.mean():.2f}%")
 plt.figure(figsize=(12,5))
+frame_idx = len(g_downsampled) // 2
 plt.subplot(1,2,1)
-plt.imshow(g_downsampled[25], cmap="RdBu_r", vmin=-0.1, vmax=0.1)
+plt.imshow(g_downsampled[frame_idx], cmap="RdBu_r", vmin=-0.1, vmax=0.1)
 plt.colorbar(label="g")
-plt.title("g (sarkans = pozitīvs, zils = negatīvs), frame 26")
+plt.title("g (red = positive, blue = negative), frame {frame_idx + 1}")
 plt.axis("off")
 
 plt.subplot(1,2,2)
-plt.hist(g_downsampled[25].ravel(), bins = 100)
+plt.hist(g_downsampled[frame_idx].ravel(), bins=100)
 plt.axvline(0, color='r', linestyle='--')
 plt.xlabel("g")
-plt.title("g histogramma, frame 26")
+plt.title(f"g histogram, frame {frame_idx + 1}")
 plt.show()
 
 
 # %% Validation preview - sākums, vidus, beigas (checklist p.8 no dokumenta)
 # =============================================================================
+vmin = np.nanmin(g_downsampled)
+vmax = np.nanmax(g_downsampled)
 fig, axes = plt.subplots(1, 3, figsize=(15,5))
 for ax, idx, label in zip(axes, [0, len(g_downsampled)//2, len(g_downsampled) - 1], ["Start", "Middle", "End"]):
-    im = ax.imshow(g_downsampled[idx], cmap="viridis")
+    im = ax.imshow(g_downsampled[idx], cmap="viridis", vmin=vmin, vmax=vmax)
     ax.set_title(f"{label} (frame {idx + 1})")
     ax.axis("off")
 fig.colorbar(im, ax=axes, shrink=0.6, label="g")
 plt.show()
 
+
+# %% Calibration - full image g viewer
+# ============================================================
+# Use the ORIGINAL full images, not croppedImages.
+# Apply the same correction, temporal binning and downsampling.
+# Calculate one frame at a time to save memory.
+# ============================================================
+
+# Average full reference image
+reference_full = reference_images.astype(np.float32).mean(axis=0)
+
+# Check image dimensions
+if images.shape[1:] != reference_full.shape:
+    raise ValueError("Measurement and reference image sizes do not match!")
+
+# Number of complete temporal bins
+n_full_bins = len(images) // bin_size
+if n_full_bins < 2:
+    raise ValueError("At least two binned frames are required for the slider.")
+
+# Full image dimensions
+H, W = reference_full.shape
+
+target_size_full = (round(W / downsample_factor), round(H / downsample_factor))
+
+
+# ============================================================
+# Calculate g for one full-image temporal bin
+# ============================================================
+
+def calculate_full_g(bin_idx):
+
+    start = bin_idx * bin_size
+    end = start + bin_size
+
+    # Select original full-size frames
+    measurement = images[start:end].astype(np.float32)
+
+    # Check valid intensities
+    valid = (np.isfinite(measurement) &
+        (measurement > 0) &
+        np.isfinite(reference_full)[None, :, :] &
+        (reference_full[None, :, :] > 0))
+
+    # Reference correction
+    I_corr_full = np.full(measurement.shape, np.nan, dtype=np.float32)
+
+    np.divide(measurement,
+        reference_full[None, :, :],
+        out=I_corr_full,
+        where=valid)
+
+    # Temporal average, ignoring invalid values
+    valid_count = np.sum(valid, axis=0)
+    intensity_sum = np.nansum(I_corr_full, axis=0)
+
+    I_binned_full = np.zeros((H, W), dtype=np.float32)
+
+    np.divide(intensity_sum,
+        valid_count,
+        out=I_binned_full,
+        where=valid_count > 0)
+
+    # Spatial downsampling, respecting invalid pixels
+    coverage = (valid_count > 0).astype(np.float32)
+
+    numerator = cv2.resize(
+        I_binned_full * coverage,
+        target_size_full,
+        interpolation=cv2.INTER_AREA)
+
+    denominator = cv2.resize(coverage,
+        target_size_full,
+        interpolation=cv2.INTER_AREA)
+
+    I_downsampled_full = np.full_like(numerator, np.nan)
+
+    np.divide(numerator,
+        denominator,
+        out=I_downsampled_full,
+        where=denominator > 0)
+
+    # Optical density
+    g_full = np.full_like(I_downsampled_full, np.nan)
+
+    valid_g = (np.isfinite(I_downsampled_full) &
+        (I_downsampled_full > 0))
+
+    g_full[valid_g] = -np.log(I_downsampled_full[valid_g])
+
+    return g_full
+
+
+# ============================================================
+# Interactive viewer
+# ============================================================
+
+plt.ion()
+
+# Keep track of the selected frame
+calibration_selection = {"frame_idx": 0}
+initial_g = calculate_full_g(0)
+
+# Find common color limits across all full-image frames
+vmin = np.inf
+vmax = -np.inf
+
+for i in range(n_full_bins):
+    g_frame = calculate_full_g(i)
+    valid_values = g_frame[np.isfinite(g_frame)]
+
+    if valid_values.size > 0:
+        vmin = min(vmin, valid_values.min())
+        vmax = max(vmax, valid_values.max())
+
+if not np.isfinite(vmin) or not np.isfinite(vmax):
+    raise ValueError("No valid g values found!")
+
+print(f"Common g color range: {vmin:.6f} to {vmax:.6f}")
+fig, ax = plt.subplots(figsize=(9, 7))
+fig.subplots_adjust(bottom=0.18)
+img_plot = ax.imshow(initial_g, cmap="viridis", vmin=vmin, vmax=vmax)
+fig.colorbar(img_plot, ax=ax, label="Optical density g")
+ax.set_title("Full image - frame 1")
+ax.set_xlabel("X (downsampled pixels)")
+ax.set_ylabel("Y (downsampled pixels)")
+slider_ax = fig.add_axes([0.2, 0.06, 0.6, 0.03])
+slider = Slider(slider_ax, "Frame", 0, n_full_bins - 1, valinit = 0, valstep = 1)
+ 
+
+def update_full_g(frame):
+    frame = int(frame)
+    calibration_selection["frame_idx"] = frame
+    g_frame = calculate_full_g(frame)
+    img_plot.set_data(g_frame)
+    ax.set_title(f"Full image - frame {frame + 1}")
+    fig.canvas.draw_idle()
+
+slider.on_changed(update_full_g)
+
+plt.show()
+
+
+# %% Initialize calibration regions
+calibration_rois = []
+
+# %% Select calibration region (P1, P2 or P3)
+# ============================================================
+from matplotlib.patches import Rectangle
+
+# Select point name
+point_name = input("Point name (P1, P2, P3): ").strip()
+# Read frame selected with the slider
+frame_idx = calibration_selection["frame_idx"]
+# Calculate full optical density for this frame
+g_frame = calculate_full_g(frame_idx)
+print(f"\nSelected frame: {frame_idx + 1}")
+print("Image size (height, width):", g_frame.shape)
+
+# Enter crop coordinates
+x1 = int(input("Enter X1: "))
+y1 = int(input("Enter Y1: "))
+x2 = int(input("Enter X2: "))
+y2 = int(input("Enter Y2: "))
+# Validate coordinates
+height, width = g_frame.shape
+
+if not (0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height):
+    raise ValueError("Invalid crop coordinates!")
+
+# Extract selected region
+g_roi = g_frame[y1:y2, x1:x2]
+# Keep only valid g values
+g_values = g_roi[np.isfinite(g_roi)]
+
+if g_values.size == 0:
+    raise ValueError("No valid g values in selected region!")
+
+# Calculate statistics
+g_mean = float(np.mean(g_values))
+g_median = float(np.median(g_values))
+g_std = float(np.std(g_values))
+
+print("\n================================")
+print(f"CALIBRATION REGION {point_name}")
+print("================================")
+print("Frame:", frame_idx + 1)
+print("Coordinates:", (x1, y1, x2, y2))
+print("Valid pixels:", g_values.size)
+print(f"Mean g:   {g_mean:.6f}")
+print(f"Median g: {g_median:.6f}")
+print(f"Std g:    {g_std:.6f}")
+print(f"Min g:    {np.min(g_values):.6f}")
+print(f"Max g:    {np.max(g_values):.6f}")
+
+# Save selected region information
+roi_data = {
+    "point": point_name,
+    "frame_index": int(frame_idx),
+    "frame_number": int(frame_idx + 1),
+    "coordinates": [x1, y1, x2, y2],
+    "g_mean": g_mean,
+    "g_median": g_median,
+    "g_std": g_std,
+    "valid_pixels": int(g_values.size)}
+
+# Replace previous selection if the same point is selected again
+calibration_rois = [p for p in calibration_rois
+    if p["point"] != point_name]
+calibration_rois.append(roi_data)
+
+# Save all selected regions to JSON
+calibration_folder = base_folder / "Calibration"
+calibration_folder.mkdir(parents=True, exist_ok=True)
+
+with open(calibration_folder / "calibration_rois.json", "w") as file:
+    json.dump(calibration_rois, file, indent=4)
+
+# Preview selected region
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.imshow(g_frame, cmap="viridis", vmin=vmin, vmax=vmax)
+
+rectangle = Rectangle((x1, y1), x2 - x1, y2 - y1,
+    fill=False, edgecolor="red", linewidth=2)
+
+ax.add_patch(rectangle)
+ax.set_title(f"{point_name} - Frame {frame_idx + 1}")
+ax.set_xlabel("X (pixels)")
+ax.set_ylabel("Y (pixels)")
+
+plt.show()
+
+print("\nSaved regions:", len(calibration_rois))
+print("Saved to:", calibration_folder / "calibration_rois.json")
+
+# %% Add concentration to calibration point
+# ============================================================
+
+json_path = base_folder / "Calibration" / "calibration_rois.json"
+
+# Load previously saved calibration regions
+with open(json_path, "r") as file:
+    calibration_rois = json.load(file)
+
+# Choose point
+point_name = input("Point name (P1, P2, P3): ").strip().upper()
+
+# Find selected point
+point = next(
+    (p for p in calibration_rois if p["point"] == point_name),
+    None
+)
+
+if point is None:
+    raise ValueError(f"{point_name} has not been selected yet!")
+
+# Enter indium concentration
+C = float(input("Indium concentration (wt.%): "))
+
+if not np.isfinite(C) or not (0 <= C <= 100):
+    raise ValueError("Concentration must be between 0 and 100 wt.%.")
+
+# Record whether concentration is known or assumed
+basis = input("Concentration basis (measured/assumed): ").strip().lower()
+
+if basis not in ("measured", "assumed"):
+    raise ValueError("Enter 'measured' or 'assumed'.")
+
+# Add concentration to existing point
+point["C_in_percent"] = C
+point["concentration_basis"] = basis
+
+# Save updated JSON
+with open(json_path, "w") as file:
+    json.dump(calibration_rois, file, indent=4)
+
+print(f"\nCalibration point {point_name}:")
+print(f"g = {point['g_median']:.6f}")
+print(f"C_In = {C:.2f} wt.%")
+print(f"Concentration basis: {basis}")
+print("Saved to:", json_path)
 # %% Save binned/downsampled images
 # =============================================================================
 # Create binnedImages folder if it does not exist
@@ -493,6 +768,7 @@ with open(binning_json_path, "w") as file:
     json.dump(binning_parameters, file, indent=4)
 
 print("Saved binning parameters:", binning_json_path)
+
 # %% Save raw optical density g_raw
 # =============================================================================
 # Create gRaw folder if it does not exist
@@ -528,8 +804,8 @@ g_raw_parameters = {
     "number_of_frames": int(g_raw.shape[0]),
     "image_shape": list(g_raw.shape[1:]),
     "data_type": "float32",
-    "value_min": float(g_raw.min()),
-    "value_max": float(g_raw.max()),
+    "value_min": float(np.nanmin(g_raw)),
+    "value_max": float(np.nanmax(g_raw)),
     "source_shape": list(I_corr.shape)
 }
 
@@ -539,6 +815,7 @@ with open(g_raw_json_path, "w") as file:
     json.dump(g_raw_parameters, file, indent=4)
 
 print("Saved g_raw parameters:", g_raw_json_path)
+
 # %% Save preprocess downsampled optical density g
 # =============================================================================
 
@@ -571,8 +848,8 @@ g_preprocess_parameters = {
     "number_of_frames": int(g_downsampled.shape[0]),
     "image_shape": list(g_downsampled.shape[1:]),
     "data_type": "float32",
-    "value_min": float(g_downsampled.min()),
-    "value_max": float(g_downsampled.max()),
+    "value_min": float(np.nanmin(g_downsampled)),
+    "value_max": float(np.nanmax(g_downsampled)),
     "source_shape": list(I_corr_downsampled_safe.shape),
     "downsample_factor": downsample_factor,
     "dx_eff_um_per_pixel": dx_eff}
@@ -585,14 +862,114 @@ with open(g_preprocess_json_path, "w") as file:
 print("Saved g parameters:", g_preprocess_json_path)
 
 
-# %% Calibration
-C_in_percent = 270.1341 * g_downsampled + 29.2945
 
-print("Min:", np.min(C_in_percent))
-print("Max:", np.max(C_in_percent))
-print("Mean:", np.mean(C_in_percent))
-print("Median:", np.median(C_in_percent))
+# %% Check calibration points P1, P2, P3
+# ============================================================
 
+json_path = base_folder / "Calibration" / "calibration_rois.json"
+
+# Load saved calibration points
+with open(json_path, "r") as file:
+    calibration_rois = json.load(file)
+
+print("\n================================")
+print("CALIBRATION POINTS")
+print("================================")
+
+for name in ["P1", "P2", "P3"]:
+
+    point = next(
+        (p for p in calibration_rois if p["point"] == name),
+        None
+    )
+
+    if point is None:
+        raise ValueError(f"{name} is missing!")
+
+    if "C_in_percent" not in point:
+        raise ValueError(f"{name} has no concentration value!")
+
+    print(f"\n{name}:")
+    print(f"g = {point['g_median']:.6f}")
+    print(f"C_In = {point['C_in_percent']:.2f} wt.%")
+    print(f"Basis = {point['concentration_basis']}")
+    print(f"Frame = {point['frame_number']}")
+    print(f"Coordinates = {point['coordinates']}")
+
+print("\nAll three calibration points are available.")
+# %% Calibration from saved P1, P2, P3
+# =============================================================================
+
+# Load calibration points from JSON
+json_path = base_folder / "Calibration" / "calibration_rois.json"
+
+with open(json_path, "r") as file:
+    calibration_rois = json.load(file)
+
+# Read the three calibration points
+g_points = []
+C_points = []
+
+for name in ["P1", "P2", "P3"]:
+
+    point = next(
+        (p for p in calibration_rois if p["point"] == name),
+        None
+    )
+
+    if point is None:
+        raise ValueError(f"Calibration point {name} is missing!")
+
+    if "C_in_percent" not in point:
+        raise ValueError(f"Concentration is missing for {name}!")
+
+    g_points.append(point["g_median"])
+    C_points.append(point["C_in_percent"])
+
+    print(
+        f"{name}: g = {point['g_median']:.6f}, "
+        f"C_In = {point['C_in_percent']:.2f} wt.%, "
+        f"basis = {point['concentration_basis']}"
+    )
+
+# Convert to NumPy arrays
+g_points = np.array(g_points, dtype=np.float64)
+C_points = np.array(C_points, dtype=np.float64)
+
+# Validate calibration values
+if not np.all(np.isfinite(g_points)) or not np.all(np.isfinite(C_points)):
+    raise ValueError("Calibration points must contain finite values!")
+
+if np.unique(g_points).size < 2:
+    raise ValueError("At least two different g values are required!")
+
+# Calculate calibration coefficients
+a, b = np.polyfit(g_points, C_points, 1)
+
+print("\n================================")
+print("CALIBRATION RESULTS")
+print("================================")
+print(f"Slope a: {a:.6f}")
+print(f"Intercept b: {b:.6f}")
+print(f"C_In (wt.%) = {a:.6f} * g + {b:.6f}")
+
+# Compare input concentrations with fitted values
+C_fitted = a * g_points + b
+
+for i in range(3):
+    print(
+        f"P{i+1}: C_input = {C_points[i]:.3f}%, "
+        f"C_fitted = {C_fitted[i]:.3f}%"
+    )
+
+# Apply calibration to g_downsampled
+C_in_percent = a * g_downsampled + b
+
+print("\nConcentration statistics:")
+print("Min:", np.nanmin(C_in_percent))
+print("Max:", np.nanmax(C_in_percent))
+print("Mean:", np.nanmean(C_in_percent))
+print("Median:", np.nanmedian(C_in_percent))
 # =============================================================================
 # Save concentration field
 
@@ -616,17 +993,6 @@ print("Indium concentration export completed")
 print("==============================")
 print(f"Saved {len(C_in_percent)} concentration images")
 print("Location:", conc_output_folder)
-
-
-
-
-
-
-
-
-
-
-
 
 
 # %% Filter optical density g
@@ -676,13 +1042,9 @@ vmax = np.nanpercentile(g_downsampled[frame_idx], 99)
 axes[0].imshow(g_downsampled[frame_idx],
                cmap="gray", vmin=vmin, vmax=vmax)
 axes[0].set_title("Raw g")
-
-axes[1].imshow(g_median[frame_idx],
-               cmap="gray", vmin=vmin, vmax=vmax)
+axes[1].imshow(g_median[frame_idx],               cmap="gray", vmin=vmin, vmax=vmax)
 axes[1].set_title("Median-filtered g")
-
-axes[2].imshow(g_filtered[frame_idx],
-               cmap="gray", vmin=vmin, vmax=vmax)
+axes[2].imshow(g_filtered[frame_idx],               cmap="gray", vmin=vmin, vmax=vmax)
 axes[2].set_title("Median + TV filtered g")
 
 
@@ -695,12 +1057,12 @@ plt.show()
 # %% Calibration
 # =============================================================================
 # Apply calibration AFTER filtering g
-C_in_percent_filtered = 270.1341 * g_filtered + 29.2945
+C_in_percent_filtered = a * g_filtered + b
 
-print("Concentration min:", np.nanmin(C_in_percent))
-print("Concentration max:", np.nanmax(C_in_percent))
-print("Concentration mean:", np.nanmean(C_in_percent))
-print("Concentration median:", np.nanmedian(C_in_percent))
+print("Concentration min:", np.nanmin(C_in_percent_filtered))
+print("Concentration max:", np.nanmax(C_in_percent_filtered))
+print("Concentration mean:", np.nanmean(C_in_percent_filtered))
+print("Concentration median:", np.nanmedian(C_in_percent_filtered))
 
 outside_range = (
     (C_in_percent_filtered < 0) |
@@ -727,50 +1089,33 @@ for i, conc in enumerate(C_in_percent_filtered):
 
 # Save processing parameters
 parameters = {
-    "calibration": "C_in_percent_filtered = 270.1341 * g + 29.2945",
-    "source": "g_downsampled",
+    "calibration": f"C_In = {a:.8f} * g + {b:.8f}",
+    "slope_a": float(a),
+    "intercept_b": float(b),
+    "source": "g_filtered",
     "filtering_domain": "optical_density_g",
     "median_filter_size": median_filter_size,
     "tv_weight": tv_weight,
     "sharpening": False,
     "concentration_clipped": False,
-    "number_of_frames": int(C_in_percent.shape[0]),
-    "image_shape": list(C_in_percent.shape[1:]),
-    "concentration_min": float(np.nanmin(C_in_percent)),
-    "concentration_max": float(np.nanmax(C_in_percent))
+    "number_of_frames": int(C_in_percent_filtered.shape[0]),
+    "image_shape": list(C_in_percent_filtered.shape[1:]),
+    "concentration_min": float(np.nanmin(C_in_percent_filtered)),
+    "concentration_max": float(np.nanmax(C_in_percent_filtered)),
+    "calibration_status": "provisional_assumed_points"
 }
 
 
-with open(conc_output_folder / "concentration_parameters.json", "w") as f:
+with open(conc_filtered_output_folder / "concentration_parameters.json", "w") as f:
     json.dump(parameters, f, indent=4)
 
-print("Concentration export completed.")
-print("Saved frames:", len(C_in_percent))
-print("Location:", conc_output_folder)
+print("Filtered concentration export completed.")
+print("Saved frames:", len(C_in_percent_filtered))
+print("Location:", conc_filtered_output_folder)
     
+
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     
     
     
@@ -780,7 +1125,6 @@ print("Location:", conc_output_folder)
 # =============================================================================
 from scipy.ndimage import median_filter
 from skimage.restoration import denoise_tv_chambolle
-from skimage.filters import unsharp_mask
 
 r = 1 # median filter radius = 1, size ir 3 by 3 window.
 size = 2*r + 1
@@ -797,15 +1141,7 @@ images_tv = np.stack([
     denoise_tv_chambolle(frame, weight=tv_weight)
     for frame in images_median])
 
-# Sharpen - atgriež smalkās detaļas, ko TV izpludināja
-images_sharpened = np.stack([
-    unsharp_mask(frame, radius=2, amount=1.0)
-    for frame in images_tv])
-
-testImagesFiltered = images_sharpened
-print("testImagesFiltered shape:", testImagesFiltered.shape)
-print("Value range:", testImagesFiltered.min(), testImagesFiltered.max())
-
+testImagesFiltered = images_tv
 # =============================================================================
 plt.figure(figsize=(20,5))
 plt.subplot(1,4,1)
@@ -828,12 +1164,6 @@ plt.imshow(testImagesFiltered[25], cmap="gray")
 plt.title("After median + TV + sharpen")
 plt.axis("off")
 plt.show()
-
-
-
-
-
-
 
 
 
