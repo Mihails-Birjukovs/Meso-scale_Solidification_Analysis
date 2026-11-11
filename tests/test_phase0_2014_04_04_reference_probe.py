@@ -75,6 +75,11 @@ class ReferenceProbeTests(unittest.TestCase):
         self.assertEqual(len(result["independent_decoder_reference_checks"]), 3)
         self.assertEqual(len(result["experimental_samples"]), 1)
         self.assertFalse(result["reference_is_homogeneous_liquid_admitted"])
+        self.assertEqual(result["reference_acquisition_role"], "flat_field_recording_owner_confirmed")
+        self.assertTrue(result["flat_field_source_role_confirmed"])
+        self.assertFalse(result["separate_initial_homogeneous_sample_baseline_identified"])
+        self.assertFalse(result["reference_is_sample_composition_baseline"])
+        self.assertIn("median_flat_field_log_ratio", result["experimental_samples"][0])
         self.assertFalse(result["concentration_wt_pct_admitted"])
         self.assertFalse(result["camera_clock_admitted"])
 
