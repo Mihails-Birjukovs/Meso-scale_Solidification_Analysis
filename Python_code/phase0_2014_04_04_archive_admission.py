@@ -199,6 +199,16 @@ def admit_listing(text: str, case: dict, *, archive_sha256: str | None) -> dict:
         "total_directories": directories,
         "auxiliary_files": auxiliary,
         "streams": report_groups,
+        "filename_candidate_frame_records": {
+            role: [
+                {"candidate_ordinal_id_zero_based": idx,
+                 "filename": e["filename"],
+                 "filename_clock_ms": e["filename_ms"],
+                 "member_size_bytes": e["size_bytes"],
+                 "member_crc32_header_unverified": e["header_crc32"]}
+                for idx, e in enumerate(sorted(group, key=lambda f: f["filename_ms"]))
+            ] for role, group in groups.items()
+        },
         "filename_reference_to_main_gap_s": round(
             (main["first_filename_clock_ms"] - ref["last_filename_clock_ms"]) / 1000, 3),
         "filename_main_to_end_gap_s": round(
