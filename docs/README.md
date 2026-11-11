@@ -9,6 +9,7 @@ This documentation explains the current public repository, experimental methodol
 | Document | Purpose |
 |---|---|
 | [November 10 source update audit](phase0-nov10-2026-direct-upload-audit.md) | Confirmed OFV sign/interpolation regressions, positive preprocessing changes and G0 physical-admission limits (Issues #9–#12) |
+| [MIL skeleton + plume concentration-anchor protocol](phase0-mil-skeleton-plume-concentration-anchor-protocol-2026-11-11.md) | Source-faithful 25/98.6/5–10 wt.% region sampling, projection caveats, initial-baseline and 2014 acceptance gates |
 | [2014-03-07 MIL and liquid-plume calibration benchmark](phase0-2014-03-07-mil-plume-calibration-test-plan.md) | Actual 500 TIFF + 418 mask source inventory, explicit geometry refusal, proposed masked-KMedoids and C(P) held-out gates |
 | [Historical v24 MIL / plume example provenance](phase0-historical-v24-mil-plume-example-audit-2026-11-02.md) | Experimental MIL overrides, K-medoids/denoising settings, archived overlays and source-mask registration gates |
 | [Phase 0 full raw reference/dark reconstruction & K-medoids sweep](phase0-reconstructed-backgrounds-and-kmedoids-2026-11-02.md) | Dataset-specific notebook pixel/exposure metadata, 2 reconstructed detector means, archived-average mismatch, K=9/16/24 tests |
