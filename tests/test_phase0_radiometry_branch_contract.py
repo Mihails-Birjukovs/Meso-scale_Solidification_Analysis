@@ -5,7 +5,7 @@ import math
 import unittest
 
 SOURCE=Path(__file__).resolve().parents[1]/"Python_code"/"phase0_radiometry_branch_contract.py"
-spec=importlib.util.spec_from_file_location("phase0_contract",SOURCE)
+spec=importlib.util.spec_from_file_location("phase0_radiometry_policy_test_module",SOURCE)
 module=importlib.util.module_from_spec(spec)
 import sys
 sys.modules[spec.name]=module
