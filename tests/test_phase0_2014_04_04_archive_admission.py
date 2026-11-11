@@ -69,7 +69,10 @@ class ArchiveAdmissionTests(unittest.TestCase):
         self.assertFalse(result["physical_clock_admitted"])
         self.assertFalse(result["original_tiff_pixels_decoded"])
         self.assertFalse(result["member_crc32_is_verified"])
-        self.assertFalse(result["reference_is_verified_homogeneous_liquid"])
+        self.assertEqual(result["reference_recording_role"], "flat_field_correction_owner_confirmed")
+        self.assertTrue(result["flat_field_role_confirmed"])
+        self.assertFalse(result["flat_field_spatial_validity_admitted"])
+        self.assertFalse(result["separate_initial_homogeneous_sample_baseline_identified"])
         self.assertFalse(result["absolute_C_In_calibration_admitted"])
 
     def test_hash_not_optional_when_provided(self):
