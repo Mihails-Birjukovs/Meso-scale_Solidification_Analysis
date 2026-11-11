@@ -1,0 +1,130 @@
+{
+  "schema": "ga-in-2014-04-04-ROI-and-initial-state-review/v1",
+  "case_id": "2014-04-04",
+  "status": "ANNOTATION_CANDIDATES_ONLY_PENDING_INDEPENDENT_EXPERT",
+  "source_archive_sha256": "77fac9a38a9cdaa41ee5ec9c9562acb7149ee1cee8f0246a80c2b267928f2510",
+  "source_series": "main source original TIFFs, no crop or geometric rescale",
+  "source_image_geometry": {
+    "width_px": 761,
+    "height_px": 426,
+    "pixel_index_base": 0,
+    "origin": "top_left",
+    "x_direction": "right",
+    "y_direction": "down",
+    "physical_pixel_pitch_um": null,
+    "source_camera_clock_verified": false
+  },
+  "radiometry": {
+    "flat_field_role": "owner_confirmed_Reference_recording",
+    "default_branch": "flat_only",
+    "dark_correction_accepted": false,
+    "source_initial_sample_reference": "provisional_main_ordinals_0_to_79_median",
+    "source_initial_sample_reference_verified_all_liquid": false,
+    "initial_composition_nominal_wt_In": 25,
+    "actual_initial_homogeneity_confirmed": false
+  },
+  "candidate_regions": [
+    {
+      "id": "central_specimen_window_unreviewed",
+      "role": "candidate_specimen_and_baseline_stability_window",
+      "rect_y0_y1_x0_x1": [
+        165,
+        350,
+        260,
+        650
+      ],
+      "evidence": "early 80 train next40 holdout; max absolute frame median provisional specimen log contrast 0.0008704124",
+      "source": "2014-04-04 main original TIFF",
+      "expert_approved": false,
+      "physical_cell_boundaries_identified": false
+    },
+    {
+      "id": "lower_growth_onset_band_unreviewed",
+      "role": "candidate_first_visible_morphology_change",
+      "rect_y0_y1_x0_x1": [
+        345,
+        405,
+        185,
+        650
+      ],
+      "evidence": "source frame candidate onset 480 (0.1%), 565 (1%), 639 (5%) under exploratory abs-log threshold 0.04 for >=20 frames",
+      "expert_approved": false,
+      "solid_interface_identified": false
+    },
+    {
+      "id": "upper_control_window_unreviewed",
+      "role": "candidate_temporal_control_only_may_include_apparatus",
+      "rect_y0_y1_x0_x1": [
+        45,
+        115,
+        300,
+        610
+      ],
+      "expert_approved": false,
+      "is_liquid_sample": false
+    }
+  ],
+  "source_frames_for_independent_review": [
+    {
+      "role": "provisional_J0_first",
+      "stream": "main",
+      "source_ordinal_zero_based": 0,
+      "filename": "ga-25in-1_2014-04-04_10-25-47-069.tif"
+    },
+    {
+      "role": "provisional_J0_end",
+      "stream": "main",
+      "source_ordinal_zero_based": 79,
+      "filename": null
+    },
+    {
+      "role": "baseline_holdout_last",
+      "stream": "main",
+      "source_ordinal_zero_based": 119,
+      "filename": null
+    },
+    {
+      "role": "first_onset_0p1pct_candidate",
+      "stream": "main",
+      "source_ordinal_zero_based": 480,
+      "filename": "ga-25in-1_2014-04-04_10-33-47-065.tif"
+    },
+    {
+      "role": "onset_1pct_candidate",
+      "stream": "main",
+      "source_ordinal_zero_based": 565,
+      "filename": "ga-25in-1_2014-04-04_10-35-12-067.tif"
+    },
+    {
+      "role": "onset_5pct_candidate",
+      "stream": "main",
+      "source_ordinal_zero_based": 639,
+      "filename": "ga-25in-1_2014-04-04_10-36-26-053.tif"
+    },
+    {
+      "role": "first_gap_end",
+      "stream": "main",
+      "source_ordinal_zero_based": 918,
+      "filename": "ga-25in-1_2014-04-04_10-41-05-056.tif"
+    },
+    {
+      "role": "last_main",
+      "stream": "main",
+      "source_ordinal_zero_based": 3147,
+      "filename": "ga-25in-1_2014-04-04_11-18-23-600.tif"
+    }
+  ],
+  "expert_annotation_requests": [
+    "verify detector/cell boundary and physical walls at source resolution",
+    "annotate independent solid and liquid masks across onset, mid and late stages",
+    "identify any pre-cooling frames and initial homogeneous Ga-In sample (distinct from flat field)",
+    "verify source frame/exposure/physical pixel pitch/camera clock",
+    "record ambiguous areas and inter-observer uncertainty"
+  ],
+  "expert_id_or_approval": null,
+  "manual_polygons_and_masks": [],
+  "independently_verified_all_liquid_start": false,
+  "geometry_physically_accepted": false,
+  "no_C_In_calibration": true,
+  "do_not_use_for_ofv_or_chemistry_until_gates": true
+}
