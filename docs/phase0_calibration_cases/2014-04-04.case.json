@@ -35,7 +35,10 @@
     }
   },
   "acquisition_clock_status": "filename_candidate_only_not_camera_verified",
-  "reference_frame_status": "precedes_run_not_yet_verified_homogeneous_liquid_or_appropriate_exposure",
+  "reference_frame_status": "flat_field_correction_acquisition_owner_confirmed; validity_and_exposure_not_independently_tested",
+  "reference_frame_role": "flat_field_correction",
+  "reference_frame_role_evidence": "user_explicit_confirmation_2026-11-11",
+  "pre_solidification_homogeneous_sample_reference_status": "not_yet_identified",
   "raw_tiff_status": "archive_header_only_not_decoded",
   "dark_field_status": "not_identified",
   "pixel_size_status": "not_identified_from_instrument",
@@ -45,7 +48,7 @@
   "next_acceptance_gates": [
     "Verify raw TIFF headers, raw uint16 pixel encoding and stack dimensions using independent decoder",
     "Independently reconcile camera metadata, exposure and filename timebase; preserve gap between main and end",
-    "Inspect reference time-series uniformity, drift and all-liquid status before adopting nominal 25 wt.% anchor",
+    "Assess flat-field acquisition temporal/spatial uniformity and exposure; separately locate verified homogeneous all-liquid pre-solidification sample frames for 25 wt.% In at P=0",
     "Find measured dark / detector bias or keep reference-only branch explicitly provisional",
     "Establish sample geometry, chamber mask and physical pixel pitch",
     "Apply temporal MIL, independently annotate solid boundaries, classify liquid-only plume cores",
