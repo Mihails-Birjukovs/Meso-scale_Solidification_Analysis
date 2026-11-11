@@ -19,7 +19,7 @@ import numpy as np
 import tifffile
 from PIL import Image, __version__ as pillow_version
 
-REPORT_SCHEMA = "ga-in-reference-raw-diagnostic/v2"
+REPORT_SCHEMA = "ga-in-flat-field-raw-diagnostic/v2"
 REF_PATTERN = re.compile(
     r"ga-25in-ref1_2014-04-04_(\d{2})-(\d{2})-(\d{2})-(\d{3})\.tif",
     re.ASCII,
@@ -136,7 +136,7 @@ def examine(reference_dir: Path, inventory: dict, *, expected_n: int,
         stamps.append(stamp)
         image, this_meta = _read_tiff(path)
         if meta is not None and meta != this_meta:
-            raise DiagnosticError("Reference image geometry or encoding drift")
+            raise DiagnosticError("Flat-field image geometry or encoding drift")
         meta = this_meta
         ref_images.append(image)
         series_rows.append({
@@ -227,7 +227,7 @@ def examine(reference_dir: Path, inventory: dict, *, expected_n: int,
         },
         "temporal_pixelwise_MAD_counts_quantiles_stable_nonmax": quantiles(
             temporal_mad[stable]),
-        "heldout_reference_median_absolute_log_contrast_quantiles": quantiles(
+        "heldout_flat_field_median_absolute_log_ratio_quantiles": quantiles(
             [abs(x["median_flat_field_log_ratio"]) for x in heldout_stats]),
         "experimental_samples": sample_stats,
         "clock_source": "filename_candidate",
