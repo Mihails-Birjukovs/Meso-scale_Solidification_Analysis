@@ -8,6 +8,7 @@ This documentation explains the current public repository, experimental methodol
 
 | Document | Purpose |
 |---|---|
+| [OFV postprocessing sign and support repair (2026-11-11)](phase0-ofv-postprocessor-repair-2026-11-11.md) | Code-level fixes for upstream inversion, image-vs-physical curl, explicit interpolation and full-grid support refusals; experiment-level G0 remains open |
 | [November 10 source update audit](phase0-nov10-2026-direct-upload-audit.md) | Confirmed OFV sign/interpolation regressions, positive preprocessing changes and G0 physical-admission limits (Issues #9–#12) |
 | [2014-03-07 MIL and liquid-plume calibration benchmark](phase0-2014-03-07-mil-plume-calibration-test-plan.md) | Actual 500 TIFF + 418 mask source inventory, explicit geometry refusal, proposed masked-KMedoids and C(P) held-out gates |
 | [Historical v24 MIL / plume example provenance](phase0-historical-v24-mil-plume-example-audit-2026-11-02.md) | Experimental MIL overrides, K-medoids/denoising settings, archived overlays and source-mask registration gates |
