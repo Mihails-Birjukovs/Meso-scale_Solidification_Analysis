@@ -8,7 +8,7 @@ Private source path: X:\AI-Lab-Test\Solidification_OFV\raw_archives\2014-04-04.7
 
 - Size: **1,507,471,570 bytes**. SHA-256: **77fac9a38a9cdaa41ee5ec9c9562acb7149ee1cee8f0246a80c2b267928f2510** (independently read and hashed on the authorized X: workstation).
 - Native listing: **3,558 files** (3,557 TIFF and one Thumbs.db), 3 folders, solid LZMA2 archive, 2 compression blocks. This is a **header census**, not a 7z member CRC integrity check.
-- **Reference:** 111 TIFF, folder 2014-04-04/Reference, prefix ga-25in-ref1, filename times 10:07:43.889–10:09:33.879.
+- **Flat-field Reference recording (owner-confirmed):** 111 TIFF, folder 2014-04-04/Reference, prefix ga-25in-ref1, filename times 10:07:43.889–10:09:33.879.
 - **Main:** 3,148 TIFF, folder 2014-04-04/2014-04-04, prefix ga-25in-1, filename times 10:25:47.069–11:18:23.600.
 - **End:** 298 TIFF in same experimental folder, prefix ga-25in-end1, filename times 11:21:20.997–11:26:18.009.
 - Filename-based gap from last reference to first main frame: **973.190 s**. Last main to first end frame: **177.397 s**. Do not interpolate across segment gaps or presume uninterrupted optical-flow pairs.
@@ -20,7 +20,7 @@ New: Python_code/phase0_2014_04_04_archive_admission.py, tests/test_phase0_2014_
 
 The utility invokes installed 7z with a fixed argument array to retrieve the technical file listing, without extraction or executing archive members. It checks unencrypted metadata, safe member paths, precise role, prefix, count and case-date constraints, CRC metadata presence and plausible filename times. It verifies the archive's full SHA-256 by streaming it read-only, unless asked to produce a clearly weaker no-hash diagnostic. It refuses to overwrite an existing output.
 
-Report deliberately leaves **physical clock, homogeneous-liquid baseline, original TIFF pixel decoding, member CRC verification, dark correction, image registration and absolute C_In calibration all false**. Merely having a Reference folder does not establish the Shevchenko P=0 reference or a 25 wt.% composition anchor.
+Report deliberately leaves **physical clock, homogeneous-liquid baseline, original TIFF pixel decoding, member CRC verification, dark correction, image registration and absolute C_In calibration all false**. The owner confirms Reference folders across the raw archives are flat-field acquisitions. They are not homogeneous-liquid sample baselines; a separate initial sample reference is required for the Shevchenko P=0 at 25 wt.% In.
 
 Windows CLI usage (from the repository root):
 
@@ -35,15 +35,15 @@ Keep source data and full read-only result on private X:. Do not put TIFF/PNG da
 | Strongest input evidence | 500 processed TIFFs and 418 algorithmic masks with private SHA inventory | SHA-identified original 7z archive with 3,446 experiment and 111 reference TIFFs |
 | Geometry | 567×276 images versus 763×384 masks; evaluated crop transform unknown | Original TIFF geometry, pixel coordinate origin and detector validity masks not yet checked |
 | Temporal mapping | 418 historical source IDs, no source camera clock accepted | Candidate filename times, three stream segments with gaps; camera clock not certified |
-| Radiometry | Original flat/reference and dark not found | Separate reference *candidate*, but not yet verified homogeneous liquid; dark not identified |
+| Radiometry | Original flat/reference and dark not found | Flat-field recording confirmed by owner; spatial flat/exposure quality and measured dark not yet verified; sample I0 missing |
 | Morphology | Reconstruct temporal MIL, compare historical masks only after registration | Apply source-faithful MIL to original frame sequence with segment-specific holdouts |
 | Absolute chemical calibration | Blocked | Blocked; 25/98.6/5–10 wt.% are hypotheses requiring independent physical evidence |
 
 ### Next experimental stages
 
 1. **Pixel integrity and provenance:** sample TIFFs from first/middle/last positions in each stream, record geometry, pixel type, value distributions, exposure metadata and independent decoded pixel checks; separately run native archive CRC check if justified.
-2. **Reference suitability:** quantify 111 reference-frame spatial patterns, temporal drift, saturation and valid detector region; independently establish all-liquid state and exposure/beam comparability. Reserve a nonoverlapping reference holdout interval.
-3. **Radiometry:** retain measured uint16 counts, distinguish detector beam/reference flat-field R from pre-solidification composition reference J0. Dark-corrected (I-D)/(R-D) requires a measured dark frame; otherwise keep no-dark reference-only analysis as provisional and explicitly label it.
+2. **Flat-field suitability:** quantify 111 flat-field reference-frame spatial patterns, temporal drift, saturation, valid detector regions and beam/exposure comparability. Independently locate actual pre-solidification all-liquid sample frames for composition baseline. Reserve a nonoverlapping reference holdout interval.
+3. **Radiometry:** retain measured uint16 counts; use owner-confirmed Reference folders as measured beam/reference flat-field R (subject to validation), never as the pre-solidification sample composition reference J0. Dark-corrected (I-D)/(R-D) requires a measured dark frame; otherwise keep no-dark reference-only analysis as provisional and explicitly label it.
 4. **MIL/dendrites/plumes:** use case-specific empirical parameters, independent solid-boundary annotations and liquid-only plume segmentation. Use K={9,12,16,24,32} and filtering controls. Original unfiltered optical density, not display intensity or cluster labels, is the measured anchor candidate signal.
 5. **Calibrated concentration:** 25 wt.% only for verified pre-solidification homogeneous liquid; 98.6 wt.% only for plausibly full-thickness coarsened dendrites; 5–10 wt.% only for independently supported Ga-rich melt channels. Avoid treating arbitrary darkest/brightest pixels or plume cores as endpoints. Consider solid-versus-liquid attenuation/path-length differences and blocked spatial/temporal validation.
 6. **G0 OFV:** source-matched PKL sample, VelocityInversion, physical pixel pitch, image bins and pair midpoint clock required before velocities/concentrations become a common experiment result.
