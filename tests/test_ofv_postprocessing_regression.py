@@ -53,6 +53,8 @@ class PostprocessingRegressionTests(unittest.TestCase):
         self.assertIn('elif INTERPOLATION_METHOD == "linear":', self.source)
         self.assertNotIn("U = U_linear.copy()", self.source)
         self.assertIn("np.isfinite(U) & np.isfinite(V)", self.source)
+        self.assertIn("np.count_nonzero(mask_far_from_data)", self.source)
+        self.assertIn("if n_unsupported:", self.source)
         self.assertIn("if n_bad:", self.source)
         self.assertIn("raise ValueError(", self.source)
         # selected field goes into derivatives and physical integrals
@@ -81,6 +83,25 @@ class PostprocessingRegressionTests(unittest.TestCase):
         vy_dx = -3.0
         self.assertEqual(coords.physical_vorticity_from_image_derivatives(ux_dy,vy_dx),5)
         self.assertEqual(0.25 + (-0.25),0)
+
+    def test_manufactured_two_dimensional_grid_derivative_sign(self):
+        # Image axes: x right, y DOWN. Construct a physical counterclockwise
+        # rotation plus planar extension, and differentiate by central differences.
+        # u_img = 2*y + x/4, v_img = -3*x - y/4.
+        u = lambda x, y: 2.0*y + 0.25*x
+        v = lambda x, y: -3.0*x - 0.25*y
+        step = 0.01
+        for x, y in ((0.0,0.0),(1.7,3.1),(-2.4,1.1)):
+            with self.subTest(x=x,y=y):
+                ux = (u(x+step,y)-u(x-step,y))/(2*step)
+                uy = (u(x,y+step)-u(x,y-step))/(2*step)
+                vx = (v(x+step,y)-v(x-step,y))/(2*step)
+                vy = (v(x,y+step)-v(x,y-step))/(2*step)
+                self.assertAlmostEqual(ux+vy,0,places=10)
+                self.assertAlmostEqual(
+                    coords.physical_vorticity_from_image_derivatives(uy,vx),
+                    5,places=10
+                )
 
     def test_reject_missing_or_invalid_upstream_inversion(self):
         for bad in (0,float("inf"),float("nan")):
