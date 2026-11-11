@@ -1,6 +1,7 @@
 """Read-only, provenance-checked raw-reference and log-contrast diagnostic.
 
-The reference folder is a *candidate* composition baseline. This code never
+The Reference folder contains flat-field correction recordings (owner-confirmed),
+not a homogeneous-alloy composition baseline. This code never
 assigns 25/5-10/98.6 wt.% In, assumes a dark frame, identifies a liquid mask,
 or certifies a camera clock. Input TIFFs must already have been extracted
 privately from the admission-checked archive.
@@ -18,7 +19,7 @@ import numpy as np
 import tifffile
 from PIL import Image, __version__ as pillow_version
 
-REPORT_SCHEMA = "ga-in-reference-raw-diagnostic/v1"
+REPORT_SCHEMA = "ga-in-reference-raw-diagnostic/v2"
 REF_PATTERN = re.compile(
     r"ga-25in-ref1_2014-04-04_(\d{2})-(\d{2})-(\d{2})-(\d{3})\.tif",
     re.ASCII,
@@ -98,17 +99,17 @@ def _read_tiff(path):
     return image, meta
 
 
-def _p_stats(image, ref0, valid_reference):
+def _p_stats(image, flat_field_R, valid_reference):
     valid = valid_reference & (image > 0) & (image < 65535)
     if not valid.any():
         raise DiagnosticError("No nonsaturated reference-comparable pixels")
-    p = -np.log(image[valid].astype(np.float64) / ref0[valid])
+    p = -np.log(image[valid].astype(np.float64) / flat_field_R[valid])
     return {
         "valid_fraction_of_full_detector": float(valid.mean()),
-        "median_reference_only_log_contrast": float(np.median(p)),
-        "mean_reference_only_log_contrast": float(np.mean(p)),
-        "quantiles_reference_only_log_contrast": quantiles(p),
-        "negative_log_contrast_fraction": float(np.mean(p < 0)),
+        "median_flat_field_log_ratio": float(np.median(p)),
+        "mean_flat_field_log_ratio": float(np.mean(p)),
+        "quantiles_flat_field_log_ratio": quantiles(p),
+        "negative_flat_field_log_ratio_fraction": float(np.mean(p < 0)),
     }
 
 
@@ -155,7 +156,7 @@ def examine(reference_dir: Path, inventory: dict, *, expected_n: int,
     temporal_median = np.median(stack, axis=0)
     temporal_mad = np.median(
         np.abs(stack.astype(np.float64) - temporal_median), axis=0)
-    ref0 = np.median(stack[:reference_train_n], axis=0)
+    flat_field_R = np.median(stack[:reference_train_n], axis=0)
     per_frame_medians = [float(np.median(image[stable])) for image in ref_images]
     ref_median0 = per_frame_medians[0]
     ratios = np.array(per_frame_medians, dtype=np.float64) / ref_median0
@@ -170,7 +171,7 @@ def examine(reference_dir: Path, inventory: dict, *, expected_n: int,
             raise DiagnosticError("Pillow and tifffile disagree on raw reference pixel values")
         agreement.append({"reference_ordinal_zero_based": i,
                           "exact_pixel_agreement": True})
-    heldout_stats = [_p_stats(im, ref0, stable)
+    heldout_stats = [_p_stats(im, flat_field_R, stable)
                      for im in ref_images[reference_train_n:]]
     sample_stats = []
     if sample_dir is not None:
@@ -191,12 +192,16 @@ def examine(reference_dir: Path, inventory: dict, *, expected_n: int,
                 "candidate_ordinal_id_zero_based": info[1]["candidate_ordinal_id_zero_based"],
                 "raw_median_counts": float(np.median(image)),
                 "fraction_at_uint16_max": float(np.mean(image == 65535)),
-                **_p_stats(image, ref0, stable)
+                **_p_stats(image, flat_field_R, stable)
             })
     report = {
         "schema": REPORT_SCHEMA,
         "case_id": "2014-04-04",
-        "status": "DESCRIPTIVE_RAW_PIXELS_AND_REFERENCE_ONLY_CONTRAST_NOT_CALIBRATION",
+        "status": "FLAT_FIELD_SOURCE_CONFIRMED_DESCRIPTIVE_LOG_RATIO_NOT_COMPOSITION",
+        "reference_acquisition_role": "flat_field_recording_owner_confirmed",
+        "flat_field_source_role_confirmed": True,
+        "flat_field_spatial_validity_admitted": False,
+        "separate_initial_homogeneous_sample_baseline_identified": False,
         "archive_sha256": inventory["archive_sha256"],
         "verified_extracted_member_crc32": True,
         "reference_count": len(refs),
@@ -223,21 +228,22 @@ def examine(reference_dir: Path, inventory: dict, *, expected_n: int,
         "temporal_pixelwise_MAD_counts_quantiles_stable_nonmax": quantiles(
             temporal_mad[stable]),
         "heldout_reference_median_absolute_log_contrast_quantiles": quantiles(
-            [abs(x["median_reference_only_log_contrast"]) for x in heldout_stats]),
+            [abs(x["median_flat_field_log_ratio"]) for x in heldout_stats]),
         "experimental_samples": sample_stats,
         "clock_source": "filename_candidate",
         "camera_clock_admitted": False,
         "physical_detector_mask_admitted": False,
         "reference_is_homogeneous_liquid_admitted": False,
-        "detector_dark_or_beam_flat_field_admitted": False,
+        "reference_is_sample_composition_baseline": False,
+        "detector_dark_measurement_admitted": False,
         "concentration_wt_pct_admitted": False,
         "no_physical_inferences_from_global_contrast": True,
         "limitations": [
             "Descriptive full-field counts include sample, walls and unknown beam profile",
-            "An independently verified homogeneous-liquid pre-cooling composition baseline is still needed",
-            "The first reference block is not an independently measured flat/dark field",
+            "The flat-field recording is not the required homogeneous-liquid pre-cooling composition baseline",
+            "The first reference block is a measured flat-field acquisition; its spatial quality as R and any dark correction remain unverified",
             "No physical crop, solid boundary, plume, or path-integrated phase model has been admitted",
-            "Reference-only logarithmic contrast is not a calibrated In mass fraction",
+            "Negative log(I/R_flat) is NOT the specimen-relative P=-ln(J_t/J0) and is not an In mass fraction",
         ],
     }
     return report, series_rows
