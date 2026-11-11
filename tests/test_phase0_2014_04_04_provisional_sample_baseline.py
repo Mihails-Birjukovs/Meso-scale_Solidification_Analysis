@@ -48,7 +48,7 @@ class ProvisionalSampleBaselineTests(unittest.TestCase):
         self.assertEqual(r["raw_source_crc_checked_selected_count"],6)
         self.assertEqual(r["train_source_frames"],3)
         self.assertEqual(r["heldout_source_frames"],2)
-        self.assertAlmostEqual(r["max_absolute_holdout_frame_median_P"],-self.np.log((40020)/40000))
+        self.assertAlmostEqual(r["max_absolute_holdout_frame_median_P"],abs(-self.np.log((40020)/40000)))
         self.assertEqual(r["status"],"CANDIDATE_SPECIMEN_BASELINE_NOT_EXPERT_ACCEPTED")
         self.assertFalse(r["independent_expert_phase_and_ROI_review"])
         self.assertFalse(r["initial_25wtpct_composition_verified"])
