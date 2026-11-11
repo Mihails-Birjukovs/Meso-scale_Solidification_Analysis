@@ -493,6 +493,16 @@ for frame_index in range(n_frames):
         raise RuntimeError("Unexpected interpolation method")
     if U.shape != X.shape or V.shape != X.shape:
         raise ValueError("Velocity grid shape differs from calibrated image grid")
+    # Finite RBF extrapolants are not necessarily physically supported. Until
+    # a verified physical cell/support mask is available, refuse all unsupported
+    # full-grid cells rather than integrating the extrapolated values.
+    n_unsupported = int(np.count_nonzero(mask_far_from_data))
+    if n_unsupported:
+        raise ValueError(
+            f"Refusing full-grid physics: {n_unsupported}/{U.size} grid points "
+            f"are farther than {max_supported_distance:g} px from observed vectors. "
+            "Establish an admitted physical domain/support mask before integration."
+        )
     finite_selected = np.isfinite(U) & np.isfinite(V)
     n_bad = int(np.count_nonzero(~finite_selected))
     if n_bad:
@@ -675,6 +685,10 @@ for frame_index in range(n_frames):
 
     summary.append({
         "frame": frame_index,
+        "interpolation_method": INTERPOLATION_METHOD,
+        "velocity_inversion": velocity_inversion,
+        "nominal_effective_pixel_pitch_m": delta_x,
+        "assumed_flow_pair_dt_s": delta_t,
         "mean_speed": np.mean(speed),
         "max_speed": np.max(speed),
         "mean_vorticity": np.mean(np.abs(omega)),
