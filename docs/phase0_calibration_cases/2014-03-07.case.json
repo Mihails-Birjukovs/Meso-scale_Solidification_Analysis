@@ -1,0 +1,67 @@
+{
+  "schema": "ga-in-calibration-case/v1",
+  "id": "2014-03-07",
+  "source_kind": "historical processed notebook output; not original raw detector radiography",
+  "public_data_license_status": "not_assessed_do_not_redistribute",
+  "image_folder": "1 Cropped Images",
+  "mask_folder": "Solid Domain Masks",
+  "source_frame_id_file": "Selected Frame IDs.csv",
+  "expected_images": 500,
+  "expected_masks": 418,
+  "expected_image_width_height": [
+    567,
+    276
+  ],
+  "expected_mask_width_height": [
+    763,
+    384
+  ],
+  "first_source_frame": 600,
+  "source_frame_step": 5,
+  "verified_pixel_transform": null,
+  "pixel_size_um_in_v25_notebook": 37.6,
+  "exposure_time_s_in_v25_notebook": 1,
+  "timebase_status": "not_verified_by_instrument",
+  "radiometry_status": "unknown_without_original_reference_dark_and_source_transform",
+  "calibration_status": "no_2014_03_07_case_specific_attenuation_C_In_anchor_measurements",
+  "historical_mask_role": "algorithm_generated_not_independent_human_ground_truth",
+  "plume_cluster_level_candidates": [
+    9,
+    12,
+    16,
+    24,
+    32
+  ],
+  "prefilter_candidates": [
+    "none",
+    "median_1px",
+    "gaussian_1px",
+    "gaussian_3px",
+    "nonlocal_means_patch1_scan15",
+    "bilateral"
+  ],
+  "region_classes": [
+    "solid",
+    "liquid_bulk",
+    "liquid_convective_plumes",
+    "invalid_detector_wall"
+  ],
+  "calibration_reference_hypotheses_only": {
+    "initial_melt_In_wt_pct": 25,
+    "indium_rich_dendrite_In_wt_pct_if_full_xray_thickness": 98.6,
+    "gallium_rich_liquid_channel_In_wt_pct_range": [
+      5,
+      10
+    ],
+    "verified_for_this_case": false
+  },
+  "acceptance_gates": [
+    "Verify physical image and mask spatial/crop transform before paired pixels",
+    "Verify source camera frame IDs/timestamps and mask correspondence",
+    "Independently annotate held-out solid masks and liquid-plume regions",
+    "Recover 2014-03-07 original radiometry, background and optical-density definition",
+    "Measure case-specific P,C_In anchors with uncertainty and checked physical validity",
+    "Evaluate masked versus unmasked KMedoids, filter sensitivity, heldout classification quality",
+    "Fit concentration-vs-luminance curve only in calibrated material domains; never infer C from class ID"
+  ]
+}
