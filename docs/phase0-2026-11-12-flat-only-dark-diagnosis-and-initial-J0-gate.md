@@ -64,3 +64,12 @@ Private source visual/metric outputs:
 5. **MIL, plume, absolute C_In, OFV and G0 closure BLOCK:** full source-specific preprocessing, experimentally matched masks and verified endpoints, clocks and physics remain essential. Preserve 2014-03-07 cropped 567×276 versus historical 763×384 mask registration as separate unresolved geometry gate.
 
 **Safety:** Raw research archives, historical masks, Mathematica master notebook and PR #18 untouched. Changes in this PR are conservative source semantics, new diagnostics/tests and metadata only. Scientific libraries are not assumed installed by CI; native Windows Python 3.10 checks are reported separately.
+
+## Expert annotation visual pack (unreviewed, original source coordinates)
+
+Additional **private** 8-frame contact sheets cover main source ordinals 0, 79, 119, 480, 565, 639, 720 and 3147. Every panel uses the original 761×426 detector pixel coordinate grid with two **unapproved** candidate rectangles: central x=[260,650), y=[165,350) in green; lower-growth x=[185,650), y=[345,405) in yellow. Neither rectangle is a physically accepted chamber or solid mask. The `initial_relative` sheet displays source-relative `-ln(I_t/J0_candidate)` without additive dark correction, not concentration.
+
+- `X:\AI-Lab-Test\Solidification_OFV\analysis_outputs\phase0_initial_baseline_gate_2026-11-12\source_onset_review_raw_8frames_v1.png`, SHA256 `E240C3E91A498DB8FFDD931D90F3C74F9E1D50B0F9C8572839665919A4A36DE2`.
+- `X:\AI-Lab-Test\Solidification_OFV\analysis_outputs\phase0_initial_baseline_gate_2026-11-12\source_onset_review_initial_relative_8frames_v1.png`, SHA256 `05DAE2D36BCC407AEAE32AABCCFB2985D38EAA8094C46F23FC4A52C29F3D4CBB`.
+
+Independent review should record the source camera's actual pre-cooling time, sample-cell boundary and wall/solid interface, phase status of initial main frames, case-specific chamber pixel pitch, rejected/ambiguous regions and reviewer identity before labelling this as the 25 wt.% all-liquid baseline.
