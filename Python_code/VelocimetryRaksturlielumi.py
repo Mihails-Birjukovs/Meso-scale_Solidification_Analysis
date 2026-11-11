@@ -18,6 +18,10 @@ import sys # To exit from the loop and stop work
 import warnings # Paslēpj warning
 warnings.filterwarnings("ignore", message="numpy.core.numeric is deprecated")
 import Divergence_Free_Interpolant as dfi
+from ofv_coordinate_conventions import (
+    require_inversion, forward_image_components,
+    physical_vorticity_from_image_derivatives,
+)
 
 # %% ====================================================================================
 # Input:
@@ -80,6 +84,10 @@ delta_x = 17.5e-6 * downsampling_factor # pixel size in meters *4 because downsa
 bin_factor = 5 # How many frames are binned
 frame_rate = 5  # frames per secound
 delta_t = (1 / frame_rate) * bin_factor  # seconds
+# Explicit interpolation method. Linear must pass full-domain finite coverage.
+INTERPOLATION_METHOD = "rbf"  # alternatives: "rbf", "linear"
+if INTERPOLATION_METHOD not in {"rbf", "linear"}:
+    raise ValueError("INTERPOLATION_METHOD must be rbf or linear")
 
 # ============================================================
 # Material parameters:
@@ -104,6 +112,8 @@ params_path = os.path.join(os.path.dirname(FLOW_FOLDER), "parameters.json")
 with open(params_path) as f:
     params = json.load(f)
 arrow_step = params["ArrowDensityStep"]
+velocity_inversion = require_inversion(params)
+print("VelocityInversion:", velocity_inversion)
 print("ArrowDensityStep:", arrow_step)
 
 # %% ============================================================
@@ -262,9 +272,12 @@ for frame_index in range(n_frames):
     
     # ========================================================
     # Convert to physical velocity
-    scale = delta_x / delta_t
-    u = u_pix * scale
-    v = v_pix * scale
+    # Both saved 2WCF components have the upstream VelocityInversion.
+    # Preserve x-right/y-down image basis through image-grid interpolation.
+    u, v = forward_image_components(
+        np.asarray(u_pix, dtype=float), np.asarray(v_pix, dtype=float),
+        inversion=velocity_inversion, m_per_pixel=delta_x, pair_dt_s=delta_t,
+    )
 
     # ========================================================
     # Grid reconstruction (grid + interpolation)
@@ -371,8 +384,7 @@ for frame_index in range(n_frames):
     positions_interp = positions_all.copy()
     vectors_interp = vectors_all.copy()
     
-    # Apgriežam vertikālo ātruma komponenti
-    vectors_interp[:, 1] *= -1
+    # Do not flip just v while keeping image-down coordinates and grid.
     X_interp = X
     Y_interp = Y
     
@@ -471,14 +483,34 @@ for frame_index in range(n_frames):
     # ============================================================
     # 5. SELECT THE FIELD USED DOWNSTREAM
     # ============================================================
-    # Pagaidām saglabājam RBF kā galveno metodi,
-    # lai pārējā koda daļa paliktu saderīga.
-    # Rezultātu izvērtē pēc diagnostikas grafikiem.
-    
-    # U = U_rbf.copy()
-    # V = V_rbf.copy()
-    U = U_linear.copy()
-    V = V_linear.copy()
+    # Explicitly select a field; RBF holdout diagnostics do not validate
+    # a different production interpolant. Keep the image-down vector basis.
+    if INTERPOLATION_METHOD == "rbf":
+        U, V = U_rbf.copy(), V_rbf.copy()
+    elif INTERPOLATION_METHOD == "linear":
+        U, V = U_linear.copy(), V_linear.copy()
+    else:
+        raise RuntimeError("Unexpected interpolation method")
+    if U.shape != X.shape or V.shape != X.shape:
+        raise ValueError("Velocity grid shape differs from calibrated image grid")
+    # Finite RBF extrapolants are not necessarily physically supported. Until
+    # a verified physical cell/support mask is available, refuse all unsupported
+    # full-grid cells rather than integrating the extrapolated values.
+    n_unsupported = int(np.count_nonzero(mask_far_from_data))
+    if n_unsupported:
+        raise ValueError(
+            f"Refusing full-grid physics: {n_unsupported}/{U.size} grid points "
+            f"are farther than {max_supported_distance:g} px from observed vectors. "
+            "Establish an admitted physical domain/support mask before integration."
+        )
+    finite_selected = np.isfinite(U) & np.isfinite(V)
+    n_bad = int(np.count_nonzero(~finite_selected))
+    if n_bad:
+        raise ValueError(
+            f"Refusing physical metrics: {INTERPOLATION_METHOD} has {n_bad}/{U.size} "
+            "nonfinite grid cells. Establish a validated support/boundary policy first."
+        )
+    print(f"Selected {INTERPOLATION_METHOD} field: 100% finite grid ({U.size} cells)")
     speed = np.hypot(U, V)
     
     # ============================================================
@@ -589,7 +621,8 @@ for frame_index in range(n_frames):
     
     # ========================================================
     # Vorticity
-    omega = dv_dx - du_dy
+    # Physical +z curl on image y-down axes.
+    omega = physical_vorticity_from_image_derivatives(du_dy, dv_dx)
     omega_squared = omega**2 
     # Lokālā viskozā disipācija [W/m^3]
     dissipation = 2 * mu_small * (du_dx**2 + dv_dy**2 + 0.5 * (du_dy + dv_dx)**2)
@@ -652,6 +685,10 @@ for frame_index in range(n_frames):
 
     summary.append({
         "frame": frame_index,
+        "interpolation_method": INTERPOLATION_METHOD,
+        "velocity_inversion": velocity_inversion,
+        "nominal_effective_pixel_pitch_m": delta_x,
+        "assumed_flow_pair_dt_s": delta_t,
         "mean_speed": np.mean(speed),
         "max_speed": np.max(speed),
         "mean_vorticity": np.mean(np.abs(omega)),
