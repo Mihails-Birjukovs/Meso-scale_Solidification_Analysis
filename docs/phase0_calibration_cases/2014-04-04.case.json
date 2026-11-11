@@ -1,0 +1,55 @@
+{
+  "schema": "ga-in-archive-case/v1",
+  "id": "2014-04-04",
+  "source_kind": "original Ga-25wt%-In radiography 7z archive; raw TIFF pixels NOT YET inspected",
+  "public_data_license_status": "not_assessed_do_not_redistribute",
+  "source_workspace": "X:\\AI-Lab-Test\\Solidification_OFV\\raw_archives",
+  "source_archive_basename": "2014-04-04.7z",
+  "archive_sha256": "77fac9a38a9cdaa41ee5ec9c9562acb7149ee1cee8f0246a80c2b267928f2510",
+  "archive_size_bytes": 1507471570,
+  "expected_tiff_counts": {
+    "reference": 111,
+    "main": 3148,
+    "end": 298
+  },
+  "expected_auxiliary_files": 1,
+  "expected_directories": 3,
+  "source_streams": {
+    "reference": {
+      "member_folder": "2014-04-04/Reference",
+      "filename_prefix": "ga-25in-ref1",
+      "observed_first_filename_time": "2014-04-04T10:07:43.889",
+      "observed_last_filename_time": "2014-04-04T10:09:33.879"
+    },
+    "main": {
+      "member_folder": "2014-04-04/2014-04-04",
+      "filename_prefix": "ga-25in-1",
+      "observed_first_filename_time": "2014-04-04T10:25:47.069",
+      "observed_last_filename_time": "2014-04-04T11:18:23.600"
+    },
+    "end": {
+      "member_folder": "2014-04-04/2014-04-04",
+      "filename_prefix": "ga-25in-end1",
+      "observed_first_filename_time": "2014-04-04T11:21:20.997",
+      "observed_last_filename_time": "2014-04-04T11:26:18.009"
+    }
+  },
+  "acquisition_clock_status": "filename_candidate_only_not_camera_verified",
+  "reference_frame_status": "precedes_run_not_yet_verified_homogeneous_liquid_or_appropriate_exposure",
+  "raw_tiff_status": "archive_header_only_not_decoded",
+  "dark_field_status": "not_identified",
+  "pixel_size_status": "not_identified_from_instrument",
+  "source_frame_registration_status": "not_verified",
+  "physical_calibration_status": "no_case_specific_5-10_25_98p6_wt_percent_anchor_measurements",
+  "concentration_calibration_admitted": false,
+  "next_acceptance_gates": [
+    "Verify raw TIFF headers, raw uint16 pixel encoding and stack dimensions using independent decoder",
+    "Independently reconcile camera metadata, exposure and filename timebase; preserve gap between main and end",
+    "Inspect reference time-series uniformity, drift and all-liquid status before adopting nominal 25 wt.% anchor",
+    "Find measured dark / detector bias or keep reference-only branch explicitly provisional",
+    "Establish sample geometry, chamber mask and physical pixel pitch",
+    "Apply temporal MIL, independently annotate solid boundaries, classify liquid-only plume cores",
+    "Accept 98.6 wt.% dendrite only with full-thickness physical support; 5–10 wt.% channel only with independent reference",
+    "Establish same-experiment velocity images and pair-midpoint timing before G0 acceptance"
+  ]
+}
