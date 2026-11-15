@@ -82,6 +82,6 @@ class ShapeIoUTests(unittest.TestCase):
         a,b=self.comp([(3,17,3,17)],[(1,15,1,15)])
         r=diag.shape_consistency(a,b,(80,100))
         self.assertAlmostEqual(r["centroid_aligned_pixel_iou_optimistic"],1)
-        self.assertAlmostEqual(r["source_footprint_clipped_fraction"],2/14*2-(2/14)**2 if False else 0.0)
+        self.assertAlmostEqual(r["source_footprint_clipped_fraction"],0.0)
 if __name__=="__main__":
     unittest.main()
