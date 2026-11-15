@@ -32,17 +32,21 @@
     "credentials",
     "unapproved institutional marks"
   ],
-  "publication_policy": "New technical pages + math assets require docs-only PR strict build, source/rights review and separately approved main-branch merge. Deployed website must be checked after merge; MathJax numbering requires browser QA.",
+  "publication_policy": "Draft PR #23 remains unmerged. Website main currently live without two new pages. New pages and math require explicit PR approval, main-only Pages deployment, and full browser instant-navigation/retained equation-number QA.",
   "acceptance": {
     "public_allowlist": true,
-    "strict_build": "CI pending for additional pages and MathJax",
-    "review": "pending PR review",
+    "strict_build": "PASS: Zensical 0.1.1 local --clean --strict at branch bc76a33; GitHub Actions INM Zensical run 43773181012 success",
+    "review": "pending owner PR review, scientific source fidelity beyond headings and equations requires review",
     "merged": false,
     "deployed": false,
     "previous_site_deployed": true,
     "math_configured": true,
-    "math_render_verified": false,
-    "equation_numbers_verified": false
+    "math_render_verified": "PASS: local Chrome headless initial-page render (scientific-methods 46 MathJax numbered labels, methods 4, code-inventory 5)",
+    "equation_numbers_verified": "PASS: 46 unique scientific-methods mjx-eqn IDs in browser DOM; numbers visible on 1440x900 screenshot",
+    "math_build_pass": true,
+    "equation_references_verified": "PASS: same-page Kristofers calibration eqref anchor resolved as URL-encoded MathJax ID in headless DOM",
+    "visual_preview": "PASS: source-linked desktop 1440x900 and narrow 480x820 screenshots, nav labels shortened",
+    "instant_navigation_back_forward": "NOT TESTED in interactive browser; mandatory follow-up before full production release acceptance"
   },
   "public_source_mirrors": [
     {
