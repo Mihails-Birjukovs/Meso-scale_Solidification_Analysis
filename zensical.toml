@@ -1,0 +1,34 @@
+[project]
+site_name = "Meso-scale Solidification Analysis"
+site_url = "https://mihails-birjukovs.github.io/Meso-scale_Solidification_Analysis/"
+site_description = "Scientific documentation for directional solidification image analysis and ongoing validation"
+site_author = "Mihails Birjukovs"
+copyright = "Copyright © 2026 Meso-scale Solidification Analysis contributors. Institutional marks excluded."
+docs_dir = "site_docs"
+site_dir = "site"
+extra_css = ["stylesheets/inm-solidification-v1.css"]
+nav = [
+  { "Home" = "index.md" },
+  { "Getting started" = "start.md" },
+  { "Architecture" = "architecture.md" },
+  { "Segmentation methods" = "methods.md" },
+  { "Plume models" = "temporal-model.md" },
+  { "Validation" = "validation.md" },
+  { "Development status" = "status.md" },
+  { "Research & rights" = "research.md" },
+]
+
+[project.theme]
+features = [
+  "navigation.instant",
+  "navigation.tracking",
+  "navigation.tabs",
+  "navigation.sections",
+  "navigation.top",
+  "toc.follow",
+]
+
+[project.theme.palette]
+scheme = "default"
+primary = "custom"
+accent = "custom"
