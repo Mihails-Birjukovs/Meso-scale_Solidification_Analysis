@@ -121,7 +121,10 @@ def main():
                 if (role,i) in (("main",1200),("main",3147),("end",297)) and radius==8 and margin==8:
                     OUT=OUTPUT/"morphological_zone_pilot_v1"
                     OUT.mkdir(exist_ok=True)
-                    np.savez_compressed(OUT/f"{role}_{i:04d}_radius8_margin8_provisional.npz",
+                    npz_path=OUT/f"{role}_{i:04d}_radius8_margin8_provisional.npz"
+                    if npz_path.exists():
+                        raise RuntimeError("Refuse overwrite of existing expert-review arrays")
+                    np.savez_compressed(npz_path,
                       zone_envelope=zone,original_negative=n040,retained_negative=kept,
                       removed_negative=n040&~kept,
                       front_y=front)
