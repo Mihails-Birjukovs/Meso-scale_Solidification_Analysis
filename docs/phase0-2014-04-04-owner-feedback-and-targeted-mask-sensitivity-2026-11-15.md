@@ -86,3 +86,11 @@ Independent **native workstation** validation: six synthetic test cases in `test
 5. Full v25 time-derived MIL dynamic threshold, source-matched OFV, laboratory temperature chronology and physical chemical calibration remain independently open gates.
 
 **GitHub:** changes to reusable benchmark source, tests, the owner's qualitative review ledger and this report are on draft PR #20, unmerged; no separate Gmail monitoring.
+
+## Verified private reviewer ZIP
+
+For efficient user review, the original **nine full-source-coordinate PNG comparison sheets** (six positive, three negative), both numerical CSVs, parameter-source provenance manifest, owner-feedback ledger and this analysis's scientific review instructions were preserved in a **new read-only-source private review ZIP**:
+
+`X:\AI-Lab-Test\Solidification_OFV\analysis_outputs\phase0_2014-04-04_targeted_mask_sensitivity_2026-11-15\targeted_mask_review_pack_v1.zip`
+
+ZIP contains fourteen payload files plus `review_pack_inventory_v1.json`; it passed a full ZIP member-integrity check. **ZIP SHA256 `c41765684f128f9baf850ed156cf80657e78226857e5be502e2b38226c917c69`**; inventory SHA256 `2043575472cf68593d6056db28e011b8b2a7618fefd3636c848f71c218da32a0`. The ZIP is not pushed to public GitHub; only source code, synthetic tests, documentation and qualitative review notes are in PR #20. Additional compact `PREVIEW_*` PNGs used for tool-side viewing are explicitly not authoritative and not included in the reviewer ZIP.
