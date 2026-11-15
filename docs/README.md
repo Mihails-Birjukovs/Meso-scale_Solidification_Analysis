@@ -56,3 +56,11 @@ Consult [`Handoff_file_exchange/README_for_agents.md`](../Handoff_file_exchange/
 Begin with [architecture](architecture-and-workflow.md) if you want to run experiments, [scientific methods](scientific-methods.md) if you need the model, and [issues](known-issues.md) followed by the [roadmap](validation-roadmap.md) if you want to implement or review changes.
 
 **Companion report:** A separate, pedagogical PDF derives the proposed equations step-by-step; the PDF is exported to the project owner outside GitHub and is not represented here as an executable or already validated physical model.
+
+---
+
+## Current developments — reviewed 2026-11-15
+
+The older technical baseline above remains archived but does **not** capture every November gate. Read the new [Phase 0 status, historical MIL lineage and T1/T2 methods audit](phase0-2026-11-15-documentation-status-and-mil-audit.md). The [candidate Zensical site](../site_docs/index.md) is curated separately and pending scientific/publication review.
+
+**Warning:** the recent Python log-contrast threshold masks (draft PR #20) are **not** historical MIL or verified physical phase masks. The provisional morphology front and magenta-excluded negative components have experiment-owner visual approval for the illustrated frames; full source-pixel, temporal, chemistry and flow G0 validation are still open.

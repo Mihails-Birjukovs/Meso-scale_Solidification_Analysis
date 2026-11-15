@@ -41,3 +41,11 @@ The original description above summarizes the **published Mathematica solidifica
 **Current development focus:** `Python_code/ImagePreprocessWithReference.py` and `Python_code/VelocimetryRaksturlielumi.py`. The original Mathematica notebooks remain research/methodological references. The independent [2WCF-SVD optical-flow repository](https://github.com/pienins/Optical-flow-svd-and-fourier-filtering) is a **read-only upstream dependency** and is not to be modified here.
 
 The documentation separates **current implemented behavior** from **proposed and user-approved scientific models**. No claim is made that the experimental Ga–In energy budget has been validated or closed. For research-agent continuity see the [append-only handoff protocol](Handoff_file_exchange/README_for_agents.md) and [22 October 2026 comprehensive handoff](Handoff_file_exchange/2026-10-22_gpt6_full-chat_scientific-model-and-documentation-handoff.md).
+
+---
+
+## INM-style Zensical documentation (2026-11-15 review branch)
+
+An [INM-inspired documentation website](zensical.toml) has been prepared **for review**, with [curated site pages](site_docs/index.md), [MIL versus fixed signed-contrast segmentation](site_docs/methods.md), [spatiotemporal plume models](site_docs/temporal-model.md), and [evidence/validation status](site_docs/validation.md). The site is planned for `https://mihails-birjukovs.github.io/Meso-scale_Solidification_Analysis/` **after** the documentation PR passes build and review and GitHub Pages deployment is independently verified. No official INM artwork or private experimental images have been published by this branch.
+
+The original 2023 methodology, current main-branch software, and newer experimental [draft PR #20](https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis/pull/20) are distinct. In particular, the source-relative positive/negative candidate masks in PR #20 are **not** the historical MIL segmentation equation. See [the latest phase-state and model-methods audit](docs/phase0-2026-11-15-documentation-status-and-mil-audit.md) for the revised evidence ledger.
