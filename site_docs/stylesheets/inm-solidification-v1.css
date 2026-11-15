@@ -1,0 +1,66 @@
+/* INM-inspired SCIENTIFIC DOCUMENTATION theme v1 — NO official institutional logos.
+   Design tokens adapted from the adopted Library/Tools INM style system.
+   Website content carries its own scientific and publication gates. */
+:root, [data-md-color-scheme="default"] {
+ --inm-blue:#004b8e; --inm-navy:#1c3854; --inm-orange:#f47b20;
+ --inm-slate:#edf3f6; --inm-paper:#fff;
+ --md-primary-fg-color:#1c3854;
+ --md-primary-fg-color--light:#365672;
+ --md-primary-fg-color--dark:#112940;
+ --md-accent-fg-color:#ce5e08;
+ --md-typeset-a-color:#00528b;
+}
+.md-header {
+ background:var(--inm-paper); color:var(--inm-navy);
+ border-bottom:3px solid var(--inm-orange);
+ box-shadow:0 1px 12px rgba(11,37,57,.10);
+}
+.md-header__title, .md-header__button {color:var(--inm-navy);}
+.md-tabs {background:var(--inm-navy);}
+.md-tabs,.md-tabs .md-tabs__link,.md-tabs .md-tabs__link:visited,
+.md-tabs .md-tabs__link:hover,.md-tabs .md-tabs__link:focus-visible{color:#fff;}
+.md-tabs .md-tabs__link{opacity:.86;}
+.md-tabs .md-tabs__item--active .md-tabs__link,
+.md-tabs .md-tabs__link:hover,.md-tabs .md-tabs__link:focus-visible{opacity:1;}
+.md-typeset h1,.md-typeset h2,.md-typeset h3{color:var(--inm-navy);font-weight:700;}
+.md-typeset h2{border-bottom:2px solid #e5edf1;padding-bottom:.35em;}
+.md-typeset h2:before{content:"";display:inline-block;height:.8em;width:.16em;margin-right:.45em;background:var(--inm-orange);border-radius:2px;}
+.md-typeset table:not([class]){box-shadow:none;border:1px solid #d9e5eb;border-radius:4px;overflow:hidden;}
+.md-typeset table:not([class]) th{background:var(--inm-navy);color:#fff;font-weight:600;}
+.md-typeset table:not([class]) tbody tr:nth-child(even){background:var(--inm-slate);}
+.md-typeset blockquote{border-left:.18rem solid var(--inm-orange);background:#f5f8fa;padding:.6em 1em;}
+.md-typeset pre{border-left:3px solid var(--inm-blue);border-radius:5px;}
+.md-typeset a{ text-underline-offset:2px; }
+.md-typeset a:focus-visible,.md-tabs__link:focus-visible{outline:3px solid var(--inm-orange);outline-offset:3px;}
+.inm-hero{
+ background:linear-gradient(135deg,#1c3854,#153149);color:#fff;
+ border-top:6px solid var(--inm-orange);border-radius:7px;
+ padding:2.5rem 2.2rem;margin:.7rem 0 1.25rem;
+}
+.md-typeset .inm-hero,.md-typeset .inm-hero :is(h1,p,strong,span,a){color:#fff;}
+.md-typeset .inm-hero h1{font-size:2.2rem;line-height:1.16;margin:.45rem 0 .6rem;}
+.md-typeset .inm-hero .inm-eyebrow{color:#ffc493;text-transform:uppercase;letter-spacing:.13em;font-size:.73rem;font-weight:750;}
+.md-typeset .inm-hero p{max-width:46rem;}
+.inm-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.15rem;}
+.md-typeset .inm-hero a.inm-action,
+.md-typeset .inm-hero a.inm-action-primary{display:inline-block;padding:.55rem .9rem;border-radius:4px;text-decoration:none;font-weight:650;border:1px solid #e4edf3;}
+.md-typeset .inm-hero a.inm-action-primary,
+.md-typeset .inm-hero a.inm-action-primary:visited{background:var(--inm-orange);border-color:var(--inm-orange);color:#142c41;}
+.md-typeset .inm-hero a.inm-action,.md-typeset .inm-hero a.inm-action:visited{color:#fff;}
+.md-typeset .inm-hero a:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+.inm-identity{display:flex;flex-wrap:wrap;gap:1rem;margin:1rem 0;padding:1rem 1.25rem;border-top:2px solid var(--inm-blue);background:var(--inm-slate);border-radius:4px;}
+.inm-identity>div{min-width:220px;flex:1;}
+.inm-identity strong{color:var(--inm-navy);}
+.md-footer{background:var(--inm-navy);}
+.md-footer-meta{background:#142c41;border-top:1px solid rgba(255,255,255,.2);}
+.md-footer,.md-footer a,.md-footer a:visited,
+.md-footer-meta,.md-footer-meta a,.md-footer-meta a:visited,
+.md-footer__title,.md-footer__direction{color:#fff;}
+.md-footer a:hover,.md-footer-meta a:hover{color:#ffd0a9;}
+footer.md-footer .md-footer-meta .md-copyright,
+footer.md-footer .md-footer-meta .md-copyright__highlight,
+footer.md-footer .md-footer-meta .md-copyright :is(span,small,strong){color:#fff!important;opacity:1;}
+footer.md-footer .md-footer-meta .md-copyright a,
+footer.md-footer .md-footer-meta .md-copyright a:visited{color:#fff!important;text-decoration-color:#fff;}
+footer.md-footer .md-footer-meta .md-copyright a:hover{color:#ffd0a9!important;}
+@media(max-width:650px){.inm-hero{padding:1.4rem 1rem}.md-typeset .inm-hero h1{font-size:1.7rem}.inm-identity{padding:.7rem;}}
