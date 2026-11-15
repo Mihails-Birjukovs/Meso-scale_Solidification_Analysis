@@ -61,7 +61,7 @@ class TentativeCorridorTests(unittest.TestCase):
         pos,valid,neg,zone,front=self.setup_case()
         with self.assertRaises(ValueError):m.candidate_corridor(pos,valid[:2],front,roi=self.ROI)
         with self.assertRaises(ValueError):m.candidate_corridor(pos,valid,front[:-1],roi=self.ROI)
-        with self.assertRaises(ValueError):m.candidate_corridor(pos,valid,np.full(80,10.),roi=self.ROI)
+        with self.assertRaises(ValueError):m.candidate_corridor(pos,valid,np.full(80,9.),roi=self.ROI)
     def test_no_source_pixel_mutation(self):
         pos,valid,neg,zone,front=self.setup_case()
         before=[x.copy() for x in (pos,valid,neg,zone,front)]
