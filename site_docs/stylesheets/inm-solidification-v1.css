@@ -64,3 +64,13 @@ footer.md-footer .md-footer-meta .md-copyright a,
 footer.md-footer .md-footer-meta .md-copyright a:visited{color:#fff!important;text-decoration-color:#fff;}
 footer.md-footer .md-footer-meta .md-copyright a:hover{color:#ffd0a9!important;}
 @media(max-width:650px){.inm-hero{padding:1.4rem 1rem}.md-typeset .inm-hero h1{font-size:1.7rem}.inm-identity{padding:.7rem;}}
+
+/* Long numbered equations remain scrollable without shrinking the underlying
+   MathJax SVG/CHTML tag text or hiding equation labels on narrow screens. */
+.md-typeset div.arithmatex{
+ max-width:100%;overflow-x:auto;overflow-y:hidden;
+ padding:.15rem .25rem .55rem;scrollbar-width:thin;
+}
+.md-typeset div.arithmatex mjx-container[display="true"]{
+ margin:.65em 0;
+}

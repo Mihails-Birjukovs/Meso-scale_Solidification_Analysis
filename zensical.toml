@@ -7,15 +7,22 @@ copyright = "Copyright © 2026 Meso-scale Solidification Analysis contributors. 
 docs_dir = "site_docs"
 site_dir = "site"
 extra_css = ["stylesheets/inm-solidification-v1.css"]
+# Pinned renderer: the configuration script runs before the MathJax 3.2.2 runtime.
+extra_javascript = [
+  "javascripts/mathjax.js",
+  "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js",
+]
 nav = [
   { "Home" = "index.md" },
-  { "Getting started" = "start.md" },
+  { "Start" = "start.md" },
   { "Architecture" = "architecture.md" },
-  { "Segmentation methods" = "methods.md" },
+  { "Code inventory" = "current-code.md" },
+  { "Scientific model" = "scientific-methods.md" },
+  { "Segmentation" = "methods.md" },
   { "Plume models" = "temporal-model.md" },
   { "Validation" = "validation.md" },
-  { "Development status" = "status.md" },
-  { "Research & rights" = "research.md" },
+  { "Status" = "status.md" },
+  { "Research" = "research.md" },
 ]
 
 [project.theme]
@@ -32,3 +39,7 @@ features = [
 scheme = "default"
 primary = "custom"
 accent = "custom"
+
+# Human-readable, numbered equations (MathJax tags="all"); documented in Library /Tools.
+[project.markdown_extensions]
+pymdownx.arithmatex.generic = true

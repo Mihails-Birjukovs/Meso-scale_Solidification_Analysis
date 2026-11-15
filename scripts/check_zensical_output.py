@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"site"
-NAMES=("index","start","architecture","methods","temporal-model","validation","research","status")
+NAMES=("index","start","architecture","current-code","scientific-methods","methods","temporal-model","validation","research","status")
 errors=[]
 for name in NAMES:
     p=OUT/"index.html" if name=="index" else OUT/name/"index.html"
@@ -11,6 +11,10 @@ for name in NAMES:
     s=p.read_text("utf-8")
     if "inm-solidification-v1.css" not in s:errors.append("no stylesheet link "+name)
     if "Meso-scale Solidification Analysis" not in s:errors.append("no site title "+name)
+    if "javascripts/mathjax.js" not in s or "mathjax@3.2.2" not in s:
+        errors.append("missing pinned MathJax runtime/config on "+name)
+    if name in ("current-code","scientific-methods","methods","temporal-model") and "arithmatex" not in s:
+        errors.append("typeset math source missing in "+name)
 css=OUT/"stylesheets"/"inm-solidification-v1.css"
 if not css.is_file():errors.append("no built CSS")
 else:
@@ -19,4 +23,4 @@ else:
         if name not in t:errors.append("no style token "+name)
 if errors:
     print("\n".join(errors));sys.exit(1)
-print("STATIC_SITE_PASS 8 pages, CSS and links detected; live Pages/browser still unverified")
+print("STATIC_SITE_PASS: 10 content pages, CSS, MathJax links and Arithmatex HTML detected; live JS rendering and equation numbering require browser QA")

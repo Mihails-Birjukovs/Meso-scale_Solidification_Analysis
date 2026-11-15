@@ -18,6 +18,26 @@ def validate(root=ROOT):
     nav=[v for item in project["nav"] for v in item.values()]
     if len(nav)!=len(set(nav)) or set(nav)!={p for p in expected if p.endswith(".md")}:err.append("nav mismatch")
     if project["extra_css"]!=["stylesheets/inm-solidification-v1.css"]:err.append("unapproved CSS")
+    allowed_js=["javascripts/mathjax.js","https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"]
+    if project.get("extra_javascript")!=allowed_js:err.append("unapproved or unpinned mathematical JS")
+    math_config=project.get("markdown_extensions",{}).get("pymdownx",{}).get("arithmatex",{})
+    if math_config.get("generic") is not True:err.append("missing generic Arithmatex math rendering")
+    canonical_mirrors=manifest.get("public_source_mirrors",[])
+    if {item["site"] for item in canonical_mirrors}!={"site_docs/current-code.md","site_docs/scientific-methods.md"}:
+        err.append("missing canonical technical source mirror provenance")
+    expected_math_counts={"current-code.md":5,"scientific-methods.md":46,
+                          "methods.md":4,"temporal-model.md":3}
+    for name,n in expected_math_counts.items():
+        page=(d/name).read_text("utf-8")
+        import re as _re
+        blocks=_re.findall(r"^\$\$\s*\n([\s\S]*?)\n\$\$",page,_re.M)
+        if len(blocks)!=n or any(len(_re.findall(r"\\label\{eq:[^}]+\}",block))!=1 for block in blocks):
+            err.append("missing/unnumbered scientific equation blocks in "+name)
+        labels=_re.findall(r"\\label\{(eq:[^}]+)\}",page)
+        if len(labels)!=len(set(labels)):err.append("duplicate equation label in "+name)
+    jsfile=(d/"javascripts"/"mathjax.js").read_text("utf-8")
+    if 'tags: "all"' not in jsfile or 'document$.subscribe' not in jsfile:
+        err.append("MathJax numbering/navigation hook missing")
     forbidden=[(r"(?i)[xg]:\\","private machine path"),(r"(?i)BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY","private key"),
         (r"(?i)(?:ghp_|github_pat_)[A-Za-z0-9_]{10,}","GitHub token"),
         (r"(?i)AIza[0-9A-Za-z_-]{20,}","API key"),
@@ -39,4 +59,4 @@ if __name__=="__main__":
     errors=validate()
     if errors:
         print("\n".join("BLOCKED: "+e for e in errors));sys.exit(1)
-    print("ALLOWLIST_PASS: 9 curated public text/style sources; manual rights review still required")
+    print("ALLOWLIST_PASS: curated public technical pages, mathematical assets, and source-mirror provenance verified; manual rights and live-browser math QA still required")

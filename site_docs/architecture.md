@@ -22,4 +22,4 @@ An external optical-flow method, [2WCF-SVD](https://github.com/pienins/Optical-f
 
 Raw TIFFs, radiometric/thermal experimental metadata, internal X: workspace archives, true phase annotations and unapproved research imagery are **excluded from this public site**. The public GitHub project is the software/source authority; its live PRs, CI runs and data-rights status are distinct.
 
-See the [code inventory](https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis/blob/main/docs/current-code.md), [scientific methods](https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis/blob/main/docs/scientific-methods.md) and [open technical issues](https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis/issues).
+See the [complete code inventory](current-code.md), [scientific methods and physical model](scientific-methods.md), and [open technical issues](https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis/issues). Both documents are now rendered directly within this website, with links to their authoritative GitHub Markdown originals.

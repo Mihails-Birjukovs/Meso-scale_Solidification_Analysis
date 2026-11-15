@@ -15,10 +15,12 @@ The contemporary experiments are **not** all implemented in the published method
 
 ## Follow the evidence
 
+- [Full current-code inventory](current-code.md) — historical source-method lineage, Python and Mathematica implementation details, limits and caveats.
+- [Full scientific methods and physical model](scientific-methods.md) — governing assumptions, calibrated-versus-proposed terms, numbered equations and uncertainty boundaries.
 - [Architecture and source code](architecture.md) — what is in the current public main branch and what is still in PRs.
 - [MIL and signed-contrast segmentation](methods.md) — algorithmic distinctions and current gate parameters.
 - [Spatial/temporal plume analysis](temporal-model.md) — current spatial experiment and approved T1 research plan.
 - [Evidence and validation](validation.md) — exact sample evidence, limitations, held-out experimental gates.
 - [Research and credits](research.md) — primary publication, collaborators, rights and data boundaries.
 
-**Not a release declaration.** Pages in this documentation review branch have not been accepted as a deployed production website. Figures, original radiographs, private station paths, laboratory credentials and unapproved institutional marks are not published here.
+**Publication status:** The documentation website is deployed through GitHub Pages (GitHub Actions) and its eight public routes plus CSS were checked on 2026-11-15. This is **not** a declaration that experimental plume segmentation, physical phase labeling, composition mapping or optical-flow models have been scientifically validated. Original radiographs, private workstation paths, laboratory credentials and unapproved institutional marks remain excluded.

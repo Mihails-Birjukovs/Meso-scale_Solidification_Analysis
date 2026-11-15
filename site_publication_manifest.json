@@ -1,25 +1,29 @@
 {
   "schema": "inm-solidification-public-site-allowlist/v1",
-  "review_date": "2026-11-15",
-  "site_scope": "single public GitHub source repo; draft PR only; Pages not yet reviewed/published",
+  "review_date": "2026-11-16",
+  "site_scope": "public main site live; full canonical source technical page mirrors proposed in draft documentation PR",
   "source_repo": "Mihails-Birjukovs/Meso-scale_Solidification_Analysis",
   "site_root": "site_docs",
   "allowed_relative_files": [
     "index.md",
     "start.md",
     "architecture.md",
+    "current-code.md",
+    "scientific-methods.md",
     "methods.md",
     "temporal-model.md",
     "validation.md",
     "status.md",
     "research.md",
-    "stylesheets/inm-solidification-v1.css"
+    "stylesheets/inm-solidification-v1.css",
+    "javascripts/mathjax.js"
   ],
   "rights": {
     "css": "INM-inspired design tokens; no official marks",
-    "text": "public scientific source and linked draft method status",
+    "text": "Public repository source documentation, reproduced with source SHA attribution; scientific method formulas typeset without changing underlying physics. Dated 2026-10-22 code inventory retained as dated inspection.",
     "images": "none",
-    "institutional_symbols": "no official logos, rights approval pending"
+    "institutional_symbols": "no official logos, rights approval pending",
+    "javascript": "Local reviewed MathJax configuration only; runtime exact-pinned 3.2.2 via public CDN, no tracking keys."
   },
   "excluded": [
     "private TIFFs",
@@ -28,12 +32,34 @@
     "credentials",
     "unapproved institutional marks"
   ],
-  "publication_policy": "PR strict-build/review then owner-approved main merge and Pages deployment; live browser QA separately",
+  "publication_policy": "Draft PR #23 remains unmerged. Website main currently live without two new pages. New pages and math require explicit PR approval, main-only Pages deployment, and full browser instant-navigation/retained equation-number QA.",
   "acceptance": {
     "public_allowlist": true,
-    "strict_build": "pending",
-    "review": "pending",
+    "strict_build": "PASS: Zensical 0.1.1 local --clean --strict at branch bc76a33; GitHub Actions INM Zensical run 43773181012 success",
+    "review": "pending owner PR review, scientific source fidelity beyond headings and equations requires review",
     "merged": false,
-    "deployed": false
-  }
+    "deployed": false,
+    "previous_site_deployed": true,
+    "math_configured": true,
+    "math_render_verified": "PASS: local Chrome headless initial-page render (scientific-methods 46 MathJax numbered labels, methods 4, code-inventory 5)",
+    "equation_numbers_verified": "PASS: 46 unique scientific-methods mjx-eqn IDs in browser DOM; numbers visible on 1440x900 screenshot",
+    "math_build_pass": true,
+    "equation_references_verified": "PASS: same-page Kristofers calibration eqref anchor resolved as URL-encoded MathJax ID in headless DOM",
+    "visual_preview": "PASS: source-linked desktop 1440x900 and narrow 480x820 screenshots, nav labels shortened",
+    "instant_navigation_back_forward": "NOT TESTED in interactive browser; mandatory follow-up before full production release acceptance"
+  },
+  "public_source_mirrors": [
+    {
+      "source": "docs/current-code.md",
+      "site": "site_docs/current-code.md",
+      "source_blob_sha": "1d24079894fe9946647bd2343e3eb3bea050c625",
+      "changes": "README/provenance banner, repository-relative link adaptation, explanatory equations typeset/numbered"
+    },
+    {
+      "source": "docs/scientific-methods.md",
+      "site": "site_docs/scientific-methods.md",
+      "source_blob_sha": "16844fe3cf435ed118e0e02d36de703e4316aead",
+      "changes": "source/provenance banner, exact mathematical relations rendered in numbered LaTeX; no physical model changes"
+    }
+  ]
 }
