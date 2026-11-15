@@ -1,0 +1,157 @@
+{
+  "schema": "ga-in-owner-reviewed-archive-digital-decision-ledger/v1",
+  "date": "2026-11-15",
+  "source_archive_basename": "rewiewed_masks_with_notes_and_labels_READ_ME_inside.7z",
+  "source_archive_sha256": "62a8833a38faf8f38117f7d1c0d3f557355debb57d8e2b73dc06628aa846105b",
+  "source_repository_benchmark": "Mihails-Birjukovs/Meso-scale_Solidification_Analysis PR #20",
+  "review_semantics": {
+    "green": "preferred/good",
+    "red": "bad/incorrect",
+    "no_frame": "neutral/not especially notable"
+  },
+  "positive": [
+    {
+      "frame": "main_0119",
+      "filename_note": "correctly found no segments",
+      "user_preference": "null-control correct"
+    },
+    {
+      "frame": "main_0480",
+      "green": [
+        "t=.02",
+        "amber expansion"
+      ],
+      "red": [
+        "t=.04",
+        "t=.06",
+        "t=.08"
+      ],
+      "neutral": [
+        "t=.03"
+      ],
+      "implication": "earliest solidifying contrast needs permissive candidate threshold"
+    },
+    {
+      "frame": "main_0639",
+      "filename_note": "t=.02 looks good; amber expansion looks correct",
+      "implication": "expanded weak positive candidates worth retaining"
+    },
+    {
+      "frame": "main_1200",
+      "filename_note": "t=.02 looks good; amber expansion looks correct",
+      "implication": "expanded weak positive candidates worth retaining"
+    },
+    {
+      "frame": "main_3147",
+      "filename_note": "lower t is better; expanded amber looks correct; cyan negative artifacts above solid zone",
+      "implication": "retain weak solid-like anomalies as uncertain but constrain isolated negative false positives"
+    },
+    {
+      "frame": "end_0297",
+      "filename_note": "t=.02 looks best; amber expansion looks correct",
+      "implication": "t=.02 is preferred even in late end acquisition"
+    }
+  ],
+  "negative": [
+    {
+      "frame": "main_1200",
+      "green": [
+        {
+          "t": 0.04,
+          "minarea": 25
+        }
+      ],
+      "red": [
+        {
+          "t": 0.08,
+          "minarea": 25
+        },
+        {
+          "t": 0.05,
+          "minarea": 150
+        },
+        {
+          "t": 0.06,
+          "minarea": 150
+        },
+        {
+          "t": 0.08,
+          "minarea": 150
+        }
+      ],
+      "implication": "do not sacrifice smaller plausible plume regions to global area threshold"
+    },
+    {
+      "frame": "main_3147",
+      "green": [
+        {
+          "t": 0.06,
+          "minarea": 25
+        },
+        {
+          "t": 0.05,
+          "minarea": 150
+        }
+      ],
+      "red": [
+        {
+          "t": 0.04,
+          "minarea": 25
+        },
+        {
+          "t": 0.08,
+          "minarea": 25
+        },
+        {
+          "t": 0.04,
+          "minarea": 150
+        },
+        {
+          "t": 0.08,
+          "minarea": 150
+        }
+      ],
+      "implication": "both upper noise removal and connected plume preservation matter"
+    },
+    {
+      "frame": "end_0297",
+      "green": [
+        {
+          "t": 0.04,
+          "minarea": 25
+        },
+        {
+          "t": 0.05,
+          "minarea": 25
+        },
+        {
+          "t": 0.06,
+          "minarea": 25
+        },
+        {
+          "t": 0.06,
+          "minarea": 150
+        },
+        {
+          "t": 0.08,
+          "minarea": 150
+        }
+      ],
+      "red": [
+        {
+          "t": 0.08,
+          "minarea": 25
+        }
+      ],
+      "implication": "quality cannot be represented by monotonic threshold/area favorability"
+    }
+  ],
+  "note_addendum": "User proposes constructing a solid-region envelope with morphology (closing, filling, erosion/dilation), then constraining negative candidate segments by that region. User cites own 2023 Experiments in Fluids paper and original v25 source, which contains Closing, FillingTransform, ImageDifference and liquid channel masks.",
+  "safety": [
+    "green/red are qualitative panel-level preferences, not independent pixelwise ground truth",
+    "uploaded images are flattened montage screenshots with no native-source pixel truth mask",
+    "do not train on screenshot border colors as phase labels",
+    "do not invent pixel coordinate geometry from panel screenshots",
+    "preserve original masks and all raw acquisition TIFFs unchanged"
+  ]
+}

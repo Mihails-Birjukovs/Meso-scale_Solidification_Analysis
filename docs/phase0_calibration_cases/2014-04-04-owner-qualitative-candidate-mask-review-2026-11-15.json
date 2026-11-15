@@ -1,0 +1,65 @@
+{
+  "schema": "ga-in-2014-04-04-human-qualitative-mask-review/v1",
+  "reviewed_at_date": "2026-11-15",
+  "reviewer_role": "experiment_owner",
+  "annotation_basis": "Two in-chat screenshots of main3147 plus qualitative review of six existing source-locked candidate overlay sheets",
+  "reviewed_method": "provisional -ln(I/J0_candidate), Gaussian sigma 1px, t=0.04, 4-connected minimum area 25px; user review is of visualization not direct source pixel polygons",
+  "scientific_status": "QUALITATIVE_FEEDBACK_NOT_INDEPENDENT_PIXELWISE_GROUND_TRUTH_OR_PHASE_LABELS",
+  "attached_screenshot_context": [
+    {
+      "source": "first user screenshot",
+      "content": "main3147 negative outline",
+      "mark": "purple rectangular indication of questionable isolated upper-liquid-region detections"
+    },
+    {
+      "source": "second user screenshot",
+      "content": "main3147 positive outline",
+      "mark": "green rectangular indication of intermediate solidifying/mushy-looking texture"
+    }
+  ],
+  "frame_reviews": [
+    {
+      "role": "main",
+      "ordinal": 119,
+      "user_assessment": "good; user agrees",
+      "status": "visual_overlay_accepted_not_phase_truth"
+    },
+    {
+      "role": "main",
+      "ordinal": 480,
+      "user_assessment": "approved",
+      "status": "visual_overlay_accepted_not_phase_truth"
+    },
+    {
+      "role": "main",
+      "ordinal": 639,
+      "user_assessment": "positive mask has ambiguous intermediate solidifying regions; request more permissive parameter comparison",
+      "status": "uncertain_requires_sensitivity_review"
+    },
+    {
+      "role": "main",
+      "ordinal": 1200,
+      "user_assessment": "negative outline makes sense; some solidifying positive structures ambiguous; request sensitivity comparison",
+      "status": "negative_visually_plausible_positive_uncertain"
+    },
+    {
+      "role": "main",
+      "ordinal": 3147,
+      "user_assessment": "negative mostly good except purple-highlighted upper detections; positive broadly plausible but green-highlighted central region visually intermediate between solid and liquid",
+      "status": "upper_negative_questioned_positive_mushy_uncertain"
+    },
+    {
+      "role": "end",
+      "ordinal": 297,
+      "user_assessment": "looks good",
+      "status": "visual_overlay_accepted_not_phase_truth"
+    }
+  ],
+  "unresolved": [
+    "Exact native 761x426 source-pixel polygons corresponding to screenshots have not been independently registered; do not silently convert screenshot boxes into source ROIs",
+    "Solidifying/mushy appearance does not establish binary solid volume or full beam-thickness phase status",
+    "User visual approval of candidate masks does not replace independent pixelwise solid/liquid annotated ground truth",
+    "Reference folder is detector flat field not homogeneous specimen J0; candidate specimen baseline is not chemically admitted"
+  ],
+  "planned_analysis": "Compare positive thresholds 0.02–0.08 and filters (Gaussian 1/2, median 3), maintain current 0.04 reference, evaluate negative upper candidates with threshold and component size; preserve ambiguous band explicitly"
+}
