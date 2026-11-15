@@ -14,15 +14,15 @@ extra_javascript = [
 ]
 nav = [
   { "Home" = "index.md" },
-  { "Getting started" = "start.md" },
+  { "Start" = "start.md" },
   { "Architecture" = "architecture.md" },
   { "Code inventory" = "current-code.md" },
-  { "Scientific methods & model" = "scientific-methods.md" },
-  { "Segmentation methods" = "methods.md" },
+  { "Scientific model" = "scientific-methods.md" },
+  { "Segmentation" = "methods.md" },
   { "Plume models" = "temporal-model.md" },
   { "Validation" = "validation.md" },
-  { "Development status" = "status.md" },
-  { "Research & rights" = "research.md" },
+  { "Status" = "status.md" },
+  { "Research" = "research.md" },
 ]
 
 [project.theme]
