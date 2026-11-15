@@ -27,14 +27,35 @@ A second source-verified PR #22 module flood-fills tentative 2D *not-positive-co
 
 Let each component i have label z_i in {plume-like, artifact-like, uncertain}. The proposed energy is
 
-~~~text
-E(z) = sum_i U_i(z_i)
-     + lambda_t * sum_(i,j in temporal_edges) w_ij * [z_i != z_j]
-     + lambda_s * sum_(i,j in spatial_edges)  v_ij * Phi(z_i,z_j)
-~~~
+
+
+$$
+\begin{aligned}
+E(\mathbf z)&=\sum_i U_i(z_i)
++\lambda_t\sum_{(i,j)\in\mathcal E_t}w_{ij}\,\mathbf1[z_i\neq z_j]\\
+&\quad+\lambda_s\sum_{(i,j)\in\mathcal E_s}v_{ij}\,\Phi(z_i,z_j)
+\end{aligned}
+\label{eq:component-crf-energy}
+$$
+
+
 
 The unary term U_i encodes each component's observation evidence: morphology, contrast, channel rooting and artifact likelihood. Temporal-edge weights w_ij represent confidence in linking motion-consistent component instances over time. Spatial edges may encode physical channel-network compatibility, **not** indiscriminate smoothness over the solidification interface. Minimize E for a maximum-a-posteriori label configuration if potentials define a probability model; otherwise interpret it strictly as regularized energy minimization.
 
-A normalizing partition function Z=sum_z exp[-E(z)] would be needed to interpret p(z|images)=exp[-E(z)]/Z as a conditional probability. Neither potentials nor probabilities are trained or calibrated at this stage. Splits/merges and transient plumes require care; a simple HMM is sufficient only for isolated tracks.
+The normalizing partition function is
+
+$$
+Z(X)=\sum_{\mathbf z}\exp[-E(\mathbf z;X)]
+\label{eq:component-crf-partition}
+$$
+
+and the associated conditional probability is
+
+$$
+P(\mathbf z\mid X)=\frac{\exp[-E(\mathbf z;X)]}{Z(X)}
+\label{eq:component-crf-probability}
+$$
+
+These would be needed before interpreting CRF energies probabilistically. Neither potentials nor probabilities are trained or calibrated at this stage. Splits/merges and transient plumes require care; a simple HMM is sufficient only for isolated tracks.
 
 **Recommended sequence:** implement interpretable T1 and a small synthetic T2 feasibility benchmark in parallel *only as an independent research test*. Do not concurrently implement both full production models or fit a CRF on six visually marked montages.
