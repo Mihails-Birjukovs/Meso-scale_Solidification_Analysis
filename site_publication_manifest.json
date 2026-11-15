@@ -1,0 +1,39 @@
+{
+  "schema": "inm-solidification-public-site-allowlist/v1",
+  "review_date": "2026-11-15",
+  "site_scope": "single public GitHub source repo; draft PR only; Pages not yet reviewed/published",
+  "source_repo": "Mihails-Birjukovs/Meso-scale_Solidification_Analysis",
+  "site_root": "site_docs",
+  "allowed_relative_files": [
+    "index.md",
+    "start.md",
+    "architecture.md",
+    "methods.md",
+    "temporal-model.md",
+    "validation.md",
+    "status.md",
+    "research.md",
+    "stylesheets/inm-solidification-v1.css"
+  ],
+  "rights": {
+    "css": "INM-inspired design tokens; no official marks",
+    "text": "public scientific source and linked draft method status",
+    "images": "none",
+    "institutional_symbols": "no official logos, rights approval pending"
+  },
+  "excluded": [
+    "private TIFFs",
+    "user review PNGs",
+    "X or G workstation paths",
+    "credentials",
+    "unapproved institutional marks"
+  ],
+  "publication_policy": "PR strict-build/review then owner-approved main merge and Pages deployment; live browser QA separately",
+  "acceptance": {
+    "public_allowlist": true,
+    "strict_build": "pending",
+    "review": "pending",
+    "merged": false,
+    "deployed": false
+  }
+}
