@@ -102,3 +102,9 @@ Remaining requirements:
 - Keep 25/5–10/98.6 wt.% chemical endpoints and true attenuation/dark calibration on separate G0 gates.
 
 **No new mask is automatically admitted to production.** The pilot and detailed provenance are on **draft PR #20**, unmerged.
+
+### Preferred 17-file morphology review ZIP
+
+A more reviewer-friendly **V2 ZIP**, retaining every V1 payload and adding a dedicated `MORPHOLOGY_REVIEW_READ_ME_FIRST.txt`, is now the preferred starting point: `X:\AI-Lab-Test\Solidification_OFV\analysis_outputs\phase0_2014-04-04_targeted_mask_sensitivity_2026-11-15\owner_archive_morphology_review_pack_v2.zip` (9,072,413 bytes; SHA256 `c707a4285036829d91d621c31fc535252a86efa980129fc193bfe14df1fce0b3`; 17 entries; ZIP integrity verified). V1 remains archived and was not overwritten. A textual transcription of the uploaded user's original README is also preserved privately as `USER_UPLOADED_REVIEW_README_VERBATIM.txt` in the parent private directory; the source archive image bytes remain in the conversation upload.
+
+**Safety hardening:** the review-code version in this PR explicitly refuses overwriting any pre-existing per-source morphology NPZ reviewer arrays, in addition to refusing overwrite of the existing sensitivity JSON.
