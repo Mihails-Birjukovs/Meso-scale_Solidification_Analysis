@@ -61,6 +61,6 @@ Begin with [architecture](architecture-and-workflow.md) if you want to run exper
 
 ## Current developments — reviewed 2026-11-15
 
-The older technical baseline above remains archived but does **not** capture every November gate. Read the new [Phase 0 status, historical MIL lineage and T1/T2 methods audit](phase0-2026-11-15-documentation-status-and-mil-audit.md). The [candidate Zensical site](../site_docs/index.md) is curated separately and pending scientific/publication review.
+The older technical baseline above remains archived but does **not** capture every November gate. Read the new [Phase 0 status, historical MIL lineage and T1/T2 methods audit](phase0-2026-11-15-documentation-status-and-mil-audit.md). The [Zensical documentation site](https://mihails-birjukovs.github.io/Meso-scale_Solidification_Analysis/) is now publicly deployed, while the scientific T1/T2 algorithmic validation and separate draft PRs remain under review.
 
 **Warning:** the recent Python log-contrast threshold masks (draft PR #20) are **not** historical MIL or verified physical phase masks. The provisional morphology front and magenta-excluded negative components have experiment-owner visual approval for the illustrated frames; full source-pixel, temporal, chemistry and flow G0 validation are still open.
