@@ -44,8 +44,8 @@ The documentation separates **current implemented behavior** from **proposed and
 
 ---
 
-## INM-style Zensical documentation (2026-11-15 review branch)
+## INM-style Zensical documentation (live since 2026-11-15)
 
-An [INM-inspired documentation website](zensical.toml) has been prepared **for review**, with [curated site pages](site_docs/index.md), [MIL versus fixed signed-contrast segmentation](site_docs/methods.md), [spatiotemporal plume models](site_docs/temporal-model.md), and [evidence/validation status](site_docs/validation.md). The site is planned for `https://mihails-birjukovs.github.io/Meso-scale_Solidification_Analysis/` **after** the documentation PR passes build and review and GitHub Pages deployment is independently verified. No official INM artwork or private experimental images have been published by this branch.
+The [public INM-inspired Zensical documentation site](https://mihails-birjukovs.github.io/Meso-scale_Solidification_Analysis/) is **deployed from the public main branch**. GitHub Actions successfully published it after the owner enabled Pages with Actions; all eight public content routes and the stylesheet were checked with HTTP 200 responses on 2026-11-15. The documentation site's branding is text/CSS only, with **no official INM logo or private experimental images**. [Sources](site_docs/index.md), [MIL vs signed-contrast segmentation](site_docs/methods.md), [candidate plume models](site_docs/temporal-model.md) and [scientific evidence status](site_docs/validation.md) remain available in the same repository.
 
 The original 2023 methodology, current main-branch software, and newer experimental [draft PR #20](https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis/pull/20) are distinct. In particular, the source-relative positive/negative candidate masks in PR #20 are **not** the historical MIL segmentation equation. See [the latest phase-state and model-methods audit](docs/phase0-2026-11-15-documentation-status-and-mil-audit.md) for the revised evidence ledger.
