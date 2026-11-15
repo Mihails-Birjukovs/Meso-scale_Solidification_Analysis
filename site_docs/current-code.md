@@ -47,21 +47,25 @@ This is an interactive procedural analysis script (~980 lines, local Windows pat
 - Enumerates cropped/raw TIFF images and reference TIFFs.
 - Crops source and reference to user-defined field of view, creates experiment-specific output folders.
 - Forms an averaged reference, normalizes input intensities and flags problematic pixels.
-- Computes raw optical density $
-g_{\mathrm{raw}}=-\ln(I_{\mathrm{corr}} \label{eq:image-preprocess-optical-density}
-$ and emits diagnostics.
+- Computes raw optical density
+
+$$
+g_{\mathrm{raw}}=-\ln(I_{\mathrm{corr}}) \label{eq:image-preprocess-optical-density}
+$$
+
+and emits diagnostics.
 - Time-averages nonoverlapping bins (currently five frames) and downsamples images spatially (currently fourfold).
 - Computes the downsampled optical density
 
-$
+$$
 g_{\mathrm{downsampled}}=-\ln(I_{\mathrm{corr\_downsampled\_safe}}) \label{eq:downsampled-optical-density}
-$
+$$
 
 and applies the experiment-specific concentration relation
 
-$
+$$
 C_{\mathrm{In\_percent}}=270.1341\,g_{\mathrm{downsampled}}+29.2945 \label{eq:preprocess-case-calibration}
-$
+$$
 
 with a separate filtered concentration output.
 - Builds an enhanced/3D-TV-filtered image stack, exports `filtered3D_%05d.tif` and JSON parameter snapshots.
@@ -102,9 +106,13 @@ The script assumes solenoidal interpolation, then computes divergence of that co
 
 The density law currently linearly interpolates **mass-fraction** densities rather than additive specific volumes. Viscosity currently also uses a linear mass-fraction blend; both will become explicit constitutive model choices. It calculates in-plane-only dissipation and ignores cross-gap shear; it has no explicit calculated planar Q field and mislabels squared Frobenius gradient norm as enstrophy.
 
-Density/velocity co-registration currently depends on shape-based `zoom`, not an explicit shared physical grid. Energy calculations over the rectangular field assume every pixel represents valid liquid, use$
+Density/velocity co-registration currently depends on shape-based `zoom`, not an explicit shared physical grid. Energy calculations over the rectangular field assume every pixel represents valid liquid, use
+
+$$
 \mathrm{d}V=\mathrm{d}x\,\mathrm{d}y\,h \label{eq:rectangular-slice-volume}
-$, and omit buoyancy/potential, flux and pressure/dilatation terms. These are **not yet trustworthy mechanical-energy closure diagnostics**.
+$$
+
+and omit buoyancy/potential, flux and pressure/dilatation terms. These are **not yet trustworthy mechanical-energy closure diagnostics**.
 
 ## 6. Tested prototype versus production source
 
@@ -118,8 +126,8 @@ A standalone uncommitted synthetic suite, `ga_in_validation_prototype_2026-10-22
 - Do not infer flow compressibility from the difference between `||grad u||²` and `|curl u|²` without boundary and model terms.
 - Do not expect the following relation over a cropped buoyancy-driven field:
 
-$
+$$
 \frac{\mathrm{d}K}{\mathrm{d}t}+D=0 \label{eq:cropped-energy-nonidentity}
-$
+$$
 
 
