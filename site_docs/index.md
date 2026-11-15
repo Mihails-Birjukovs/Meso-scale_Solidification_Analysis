@@ -15,6 +15,8 @@ The contemporary experiments are **not** all implemented in the published method
 
 ## Follow the evidence
 
+- [Full current-code inventory](current-code.md) — historical source-method lineage, Python and Mathematica implementation details, limits and caveats.
+- [Full scientific methods and physical model](scientific-methods.md) — governing assumptions, calibrated-versus-proposed terms, numbered equations and uncertainty boundaries.
 - [Architecture and source code](architecture.md) — what is in the current public main branch and what is still in PRs.
 - [MIL and signed-contrast segmentation](methods.md) — algorithmic distinctions and current gate parameters.
 - [Spatial/temporal plume analysis](temporal-model.md) — current spatial experiment and approved T1 research plan.
