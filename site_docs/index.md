@@ -21,4 +21,4 @@ The contemporary experiments are **not** all implemented in the published method
 - [Evidence and validation](validation.md) — exact sample evidence, limitations, held-out experimental gates.
 - [Research and credits](research.md) — primary publication, collaborators, rights and data boundaries.
 
-**Not a release declaration.** Pages in this documentation review branch have not been accepted as a deployed production website. Figures, original radiographs, private station paths, laboratory credentials and unapproved institutional marks are not published here.
+**Publication status:** The documentation website is deployed through GitHub Pages (GitHub Actions) and its eight public routes plus CSS were checked on 2026-11-15. This is **not** a declaration that experimental plume segmentation, physical phase labeling, composition mapping or optical-flow models have been scientifically validated. Original radiographs, private workstation paths, laboratory credentials and unapproved institutional marks remain excluded.
