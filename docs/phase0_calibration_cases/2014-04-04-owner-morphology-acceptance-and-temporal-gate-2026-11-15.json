@@ -1,0 +1,54 @@
+{
+  "schema": "ga-in-2014-04-04-owner-review-status-v2",
+  "review_date": "2026-11-15",
+  "evidence_kind": "experiment-owner qualitative confirmation of source-registered review presentation; not independent phase-pixel ground truth",
+  "supersedes": "docs/phase0_calibration_cases/2014-04-04-owner-archive-panel-label-ledger-2026-11-15.json in acceptance status only; original entries unchanged",
+  "reviewed_pilot_configuration": {
+    "positive_threshold": 0.02,
+    "negative_threshold": 0.04,
+    "gaussian_sigma_pixels": 1,
+    "min_component_pixels": 25,
+    "front_closing_disk_radius_pixels": 8,
+    "front_median_smooth_width_pixels": 15,
+    "front_gaussian_smooth_sigma_pixels": 2,
+    "zone_upward_margin_pixels": 8,
+    "negative_component_min_zone_intersection_pixels": 10
+  },
+  "owner_statements": [
+    {
+      "topic": "provisional reconstructed solidification front",
+      "judgment": "visually excellent / approved for shown examples",
+      "scope": "reviewed presentation examples; not physical pixelwise certification"
+    },
+    {
+      "topic": "magenta rejected negative components",
+      "judgment": "correctly excluded",
+      "scope": "reviewed main 1200, main 3147 and end 297 demonstration sheets"
+    },
+    {
+      "topic": "cyan negative plume-like components extending above front",
+      "judgment": "preserve structures arising from liquid channels connected with bulk liquid above the front",
+      "scope": "desired physics-aware logic; explicit channel-to-bulk path not yet computed"
+    },
+    {
+      "topic": "spatiotemporal coherence",
+      "judgment": "requests reconsideration and concrete model",
+      "scope": "research design discussion, not implicit approval to change production mask"
+    },
+    {
+      "topic": "documentation",
+      "judgment": "requests exact operations and next steps",
+      "scope": "method specification and development plan"
+    }
+  ],
+  "validation_constraints": [
+    "Freeze existing candidate masks and morphology review outputs; do not rewrite scientific outputs",
+    "Distinguish user-positive visual acceptance from independent pixelwise phase truth",
+    "Do not infer connected-to-bulk-liquid from a 10-pixel overlap with approximate solid zone",
+    "Do not bridge source gaps 919,1836,2770 or main/end boundary without independent source timing",
+    "Keep uncertain/mushy-zone candidates distinct from measured physical solid fraction",
+    "Do not merge PR #20 absent separate explicit approval"
+  ],
+  "methods_document": "docs/phase0-2014-04-04-current-mask-pipeline-and-spatiotemporal-design-2026-11-15.md",
+  "status": "review_acceptance_recorded; physical G0 still open"
+}
