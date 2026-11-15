@@ -22,6 +22,8 @@ C_{\mathrm{In}}\,(\mathrm{wt.}\%)=270.1341\,g+29.2945
 \label{eq:kristofers-calibration}
 $$
 
+The fit is identified as Equation \(\eqref{eq:kristofers-calibration}\) within this website edition; numbering is for document navigation, not an inherited publication equation number.
+
 **[A]** This calibration is due to Kristofers for these specific images. Natalia Shevchenko's *separate* three-reference semi-quantitative calibration is informative:
 
 $$
