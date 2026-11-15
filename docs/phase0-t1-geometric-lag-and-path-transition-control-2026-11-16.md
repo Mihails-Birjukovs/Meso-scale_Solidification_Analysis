@@ -56,7 +56,43 @@ When both endpoints are already morphology-retained, main3000–3147 has **0/561
 
 **Finding:** promoting weak-positive optical contrast to definite solid obstruction can create strong instability of hypothetical source-to-upper-ROI path support, especially in developing main1120–1280. These results support keeping weak positive structure as uncertain, NOT declaring the +0.04 solid-barrier model physically correct.
 
-## C. Next falsification and owner review
+## C. Three-original-frame candidate triplet kinematics (source-hashed replay)
+
+New public code: Python_code/phase0_t1_triplet_motion_diagnostic.py and tests/test_phase0_t1_triplet_motion_diagnostic.py. Eleven native synthetic tests PASS, explicitly including straight constant-velocity motion, a genuine 90-degree turn, a stationary detector defect with perfect zero-acceleration, split/merge multi-path candidates, source 1001ms timing, group/time gap rejection and original-data nonmutation. This diagnostic consumes and checks *the already-frozen original T1 component graphs*, not original radiograph pixels or source-unregistered OFV.
+
+For every two-edge candidate graph path A->B->C in three strictly adjacent source ordinals and the **same original acquisition group**, let the original-detector centroid velocity estimates be
+
+$$
+\mathbf v_1=\frac{\mathbf c_B-\mathbf c_A}{t_B-t_A},
+\qquad
+\mathbf v_2=\frac{\mathbf c_C-\mathbf c_B}{t_C-t_B}.
+$$
+
+The diagnostic velocity jump and turning angle are
+
+$$
+\Delta_v=\lVert\mathbf v_2-\mathbf v_1\rVert,
+\qquad
+\vartheta=\arccos\frac{\mathbf v_1\cdot\mathbf v_2}{\lVert\mathbf v_1\rVert\,\lVert\mathbf v_2\rVert}.
+$$
+
+The angle is **undefined** unless both centroid speeds reach the declared sensitivity threshold of 1 source pixel/s. Separately flag both speeds below 0.5px/s as *near stationary*, and angles at least 120 degrees as *large direction changes* **for review only**. These are **not scientifically optimized cutoffs**, not true fluid acceleration measurements and not universal plume rejection criteria.
+
+| Frozen original-source window | Two-edge candidate paths | Middle nodes with multiple candidate predecessors/successors (paths) | Near-stationary candidate paths | Angles at least 120 degrees / paths where orientation is defined |
+|---|---:|---:|---:|---:|
+| main450–700 | 13 | 10 | 0 | 9 / 10 |
+| main1120–1280 | 2,438 | 2,263 | 59 | 962 / 1,674 |
+| main3000–3147 | **33,753** | **32,703** | 810 | **14,183 / 27,282** |
+| end0–297 | **21,318** | **20,399** | 1,384 | **7,459 / 11,617** |
+| **Total** | **57,522** | **55,375** | **2,253** | **22,613 / 40,583** |
+
+Full original-source-graph SHA256-checked triplet diagnostics report SHA256: **0cc14d49971f3db9031022d4aab4b086d0caa4226f72a89a9f9f9486273f8437**.
+
+**Interpretation:** the candidate graph permits many simultaneously competing A->B->C paths, particularly in the later high-component-density sequence. Large apparent centroid direction changes can reflect wrong geometric associations, real plume turns, deformation, or split/merge events. A perfectly stationary detector artifact will have zero velocity jump and can satisfy a simple smooth-motion penalty better than a genuine moving plume. Therefore **triplet acceleration minimization cannot by itself disambiguate physically correct lineage**.
+
+This is a pre-selection **diagnostic**, not a production graph fitter. A defensible next test must simultaneously evaluate motion/shape/contrast, explicit source-coordinate artifacts, genuine birth/split/merge and independently classified expert temporal links. No existing T1 edge or morphology decision is changed.
+
+## D. Next falsification and owner review
 
 1. Retain the frozen morphology-only segmentation. Temporal links and candidate channel status remain separate, interpretable evidence annotations, not new hard keep/reject rules.
 2. Await independent expert classification of the existing ten temporal pairs (correct lineage / incorrect association / uncertain), original-frame phase boundaries and source-to-bulk-liquid channels. A source-linked private ZIP with the editable 19-row review ledger is already prepared for owner review.
