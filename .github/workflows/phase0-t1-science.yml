@@ -38,6 +38,7 @@ jobs:
           python tests/test_phase0_t1_tentative_liquid_corridor.py -v
           python tests/test_phase0_t1_geometric_lag_and_path_controls.py -v
           python tests/test_phase0_t1_triplet_motion_diagnostic.py -v
+          python tests/test_phase0_t1_graded_lineage_evidence.py -v
           python tests/test_phase0_t2_crf_toy_feasibility.py -v
       - name: Verify expected suite source inventory
         run: |
@@ -49,6 +50,7 @@ jobs:
             'tests/test_phase0_t1_tentative_liquid_corridor.py',
             'tests/test_phase0_t1_geometric_lag_and_path_controls.py',
             'tests/test_phase0_t1_triplet_motion_diagnostic.py',
+            'tests/test_phase0_t1_graded_lineage_evidence.py',
             'tests/test_phase0_t2_crf_toy_feasibility.py',
           )
           assert all(Path(x).is_file() for x in expected)
