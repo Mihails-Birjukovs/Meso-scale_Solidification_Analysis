@@ -1,0 +1,60 @@
+name: Phase 0 T1 scientific synthetic tests
+
+on:
+  pull_request:
+    paths:
+      - 'Python_code/phase0_spatiotemporal_component_graph_t1.py'
+      - 'Python_code/phase0_t1_*.py'
+      - 'Python_code/phase0_t2_crf_toy_feasibility.py'
+      - 'tests/test_phase0_spatiotemporal_component_graph_t1.py'
+      - 'tests/test_phase0_t1_*.py'
+      - 'tests/test_phase0_t2_crf_toy_feasibility.py'
+      - '.github/workflows/phase0-t1-science.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  t1-native-science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install explicitly pinned numerical dependencies
+        run: |
+          python -m pip install --disable-pip-version-check numpy==1.26.4 scipy==1.13.1
+          python -c "import numpy, scipy; assert numpy.__version__=='1.26.4' and scipy.__version__=='1.13.1'"
+      - name: Run source-independent T1 and T2 synthetic tests
+        run: |
+          python tests/test_phase0_spatiotemporal_component_graph_t1.py -v
+          python tests/test_phase0_t1_pixel_shape_link_diagnostic.py -v
+          python tests/test_phase0_t1_tentative_liquid_corridor.py -v
+          python tests/test_phase0_t1_geometric_lag_and_path_controls.py -v
+          python tests/test_phase0_t1_triplet_motion_diagnostic.py -v
+          python tests/test_phase0_t1_graded_lineage_evidence.py -v
+          python tests/test_phase0_t1_weight_grid_sensitivity.py -v
+          python tests/test_phase0_t2_crf_toy_feasibility.py -v
+      - name: Verify expected suite source inventory
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          expected = (
+            'tests/test_phase0_spatiotemporal_component_graph_t1.py',
+            'tests/test_phase0_t1_pixel_shape_link_diagnostic.py',
+            'tests/test_phase0_t1_tentative_liquid_corridor.py',
+            'tests/test_phase0_t1_geometric_lag_and_path_controls.py',
+            'tests/test_phase0_t1_triplet_motion_diagnostic.py',
+            'tests/test_phase0_t1_graded_lineage_evidence.py',
+            'tests/test_phase0_t1_weight_grid_sensitivity.py',
+            'tests/test_phase0_t2_crf_toy_feasibility.py',
+          )
+          assert all(Path(x).is_file() for x in expected)
+          print('T1 SCIENCE SOURCE-INDEPENDENT TEST SOURCES VERIFIED:', len(expected))
+          PY
