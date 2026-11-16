@@ -1,5 +1,8 @@
 """Synthetic preregistered T1 cue-weight sensitivity tests (no source data)."""
 import unittest
+import sys
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from Python_code import phase0_t1_graded_lineage_evidence as base
 from Python_code import phase0_t1_weight_grid_sensitivity as sensitivity
 
