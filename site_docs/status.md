@@ -14,4 +14,4 @@
 | CRF/factor-graph T2 | Optional research backup | [Model design](temporal-model.md) |
 | Physical chamber, chemical and energy acceptance | Open | [Validation](validation.md) |
 
-**Publication status:** GitHub Pages was successfully deployed from main on 2026-11-15 and eight page routes plus the custom CSS were independently checked with HTTP 200. This does **not** certify mobile visual layout, official institutional marks, calibrated experimental plume segmentation or rights to redistribute raw experimental imagery.
+**Publication status:** GitHub Pages was successfully deployed from main on 2026-11-15 and eight page routes plus the custom CSS were independently checked with HTTP 200. This historical check does **not** certify subsequent mobile layout or new institutional branding changes, calibrated experimental plume segmentation or rights to redistribute raw experimental imagery. The three exact INM marks newly proposed on 2026-11-19 require separate release acceptance.
