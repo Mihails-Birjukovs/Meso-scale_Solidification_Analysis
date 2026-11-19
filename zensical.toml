@@ -3,9 +3,11 @@ site_name = "Meso-scale Solidification Analysis"
 site_url = "https://mihails-birjukovs.github.io/Meso-scale_Solidification_Analysis/"
 site_description = "Scientific documentation for directional solidification image analysis and ongoing validation"
 site_author = "Mihails Birjukovs"
-copyright = "Copyright © 2026 Meso-scale Solidification Analysis contributors. Institutional marks excluded."
+copyright = "Copyright © 2026 Meso-scale Solidification Analysis contributors. Institutional marks separately owned."
 docs_dir = "site_docs"
 site_dir = "site"
+repo_url = "https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis"
+repo_name = "Solidification Analysis · GitHub"
 extra_css = ["stylesheets/inm-solidification-v1.css"]
 # Pinned renderer: the configuration script runs before the MathJax 3.2.2 runtime.
 extra_javascript = [
@@ -26,6 +28,8 @@ nav = [
 ]
 
 [project.theme]
+logo = "assets/inm-horizontal.svg"
+favicon = "assets/inm-mark.svg"
 features = [
   "navigation.instant",
   "navigation.tracking",

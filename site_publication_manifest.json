@@ -1,7 +1,7 @@
 {
   "schema": "inm-solidification-public-site-allowlist/v1",
-  "review_date": "2026-11-16",
-  "site_scope": "public main site live; full canonical source technical page mirrors proposed in draft documentation PR",
+  "review_date": "2026-11-19",
+  "site_scope": "Reviewed baseline includes 10 published scientific documentation pages; proposed branding/GitHub header update is a draft, not merged or deployed",
   "source_repo": "Mihails-Birjukovs/Meso-scale_Solidification_Analysis",
   "site_root": "site_docs",
   "allowed_relative_files": [
@@ -16,13 +16,16 @@
     "status.md",
     "research.md",
     "stylesheets/inm-solidification-v1.css",
-    "javascripts/mathjax.js"
+    "javascripts/mathjax.js",
+    "assets/inm-horizontal.svg",
+    "assets/inm-mark.svg",
+    "assets/inm-square-footer.svg"
   ],
   "rights": {
-    "css": "INM-inspired design tokens; no official marks",
+    "css": "INM-inspired theme CSS with reviewed official INM header/footer symbol references; theme code and institutional artwork have separate rights",
     "text": "Public repository source documentation, reproduced with source SHA attribution; scientific method formulas typeset without changing underlying physics. Dated 2026-10-22 code inventory retained as dated inspection.",
-    "images": "none",
-    "institutional_symbols": "no official logos, rights approval pending",
+    "images": "Three reviewed institutional INM vector assets only (header, favicon, footer); no experimental image assets",
+    "institutional_symbols": "Owner explicitly requested transfer of the exact OOC/WUFI INM marks to this site on 2026-11-19; the artwork remains separately owned and is not licensed under project/source code terms; no claim of research endorsement",
     "javascript": "Local reviewed MathJax configuration only; runtime exact-pinned 3.2.2 via public CDN, no tracking keys."
   },
   "excluded": [
@@ -30,23 +33,20 @@
     "user review PNGs",
     "X or G workstation paths",
     "credentials",
-    "unapproved institutional marks"
+    "other non-approved institutional marks"
   ],
-  "publication_policy": "Draft PR #23 remains unmerged. Website main currently live without two new pages. New pages and math require explicit PR approval, main-only Pages deployment, and full browser instant-navigation/retained equation-number QA.",
+  "publication_policy": "2026-11-19 proposed branding PR is review-only. Its approved OOC artwork copies, exact allowlist and active-asset tests require strict CI, owner PR acceptance, default-branch Pages deployment, and independent visual/mobile checks; no experimental imagery or scientific code is published as a consequence.",
   "acceptance": {
-    "public_allowlist": true,
-    "strict_build": "PASS: Zensical 0.1.1 local --clean --strict at branch bc76a33; GitHub Actions INM Zensical run 43773181012 success",
-    "review": "pending owner PR review, scientific source fidelity beyond headings and equations requires review",
-    "merged": false,
-    "deployed": false,
+    "public_allowlist": "PROPOSED_15_FILE_SET_NOT_YET_MERGED",
+    "site_branding_rights": "OWNER_REQUESTED_TRANSFER_2026_11_19_REVIEW_PENDING",
+    "strict_build": "PENDING_PR_CI",
+    "review": "PENDING_PR_APPROVAL",
+    "merged_default_branch": false,
+    "pages_deployed": false,
     "previous_site_deployed": true,
-    "math_configured": true,
-    "math_render_verified": "PASS: local Chrome headless initial-page render (scientific-methods 46 MathJax numbered labels, methods 4, code-inventory 5)",
-    "equation_numbers_verified": "PASS: 46 unique scientific-methods mjx-eqn IDs in browser DOM; numbers visible on 1440x900 screenshot",
-    "math_build_pass": true,
-    "equation_references_verified": "PASS: same-page Kristofers calibration eqref anchor resolved as URL-encoded MathJax ID in headless DOM",
-    "visual_preview": "PASS: source-linked desktop 1440x900 and narrow 480x820 screenshots, nav labels shortened",
-    "instant_navigation_back_forward": "NOT TESTED in interactive browser; mandatory follow-up before full production release acceptance"
+    "browser_visual_qa": "PENDING_NEW_BRANDING_AND_REPOSITORY_HEADER",
+    "math_rendering": "Previously validated; new CSS requires regression acceptance",
+    "source_mirror_fidelity": "Existing source SHA mappings unchanged"
   },
   "public_source_mirrors": [
     {
@@ -61,5 +61,34 @@
       "source_blob_sha": "16844fe3cf435ed118e0e02d36de703e4316aead",
       "changes": "source/provenance banner, exact mathematical relations rendered in numbered LaTeX; no physical model changes"
     }
-  ]
+  ],
+  "institutional_logo_source": {
+    "repository": "Mihails-Birjukovs/OOC_Particles_Velocimetry_Docs",
+    "commit": "26bee7c382c6f4d6f0dd209a954fa645b950a980",
+    "paths_and_blob_shas": {
+      "assets/inm-horizontal.svg": "33938b2a9a6ae442b3ede153fb79187a31040a68",
+      "assets/inm-mark.svg": "b3a5154d96b0daf24cd44711fa13980689119287",
+      "assets/inm-square-footer.svg": "327ffd7d447e8475e4c8f0e0d0fa68f465be841b"
+    },
+    "authorized_scope": "this Solidification website only; official mark rights kept separate"
+  },
+  "github_header": {
+    "url": "https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis",
+    "placement": "standard Zensical upper-right md-source repository link"
+  },
+  "historical_acceptance_2026_11_16": {
+    "public_allowlist": true,
+    "strict_build": "PASS: Zensical 0.1.1 local --clean --strict at branch bc76a33; GitHub Actions INM Zensical run 43773181012 success",
+    "review": "pending owner PR review, scientific source fidelity beyond headings and equations requires review",
+    "merged": false,
+    "deployed": false,
+    "previous_site_deployed": true,
+    "math_configured": true,
+    "math_render_verified": "PASS: local Chrome headless initial-page render (scientific-methods 46 MathJax numbered labels, methods 4, code-inventory 5)",
+    "equation_numbers_verified": "PASS: 46 unique scientific-methods mjx-eqn IDs in browser DOM; numbers visible on 1440x900 screenshot",
+    "math_build_pass": true,
+    "equation_references_verified": "PASS: same-page Kristofers calibration eqref anchor resolved as URL-encoded MathJax ID in headless DOM",
+    "visual_preview": "PASS: source-linked desktop 1440x900 and narrow 480x820 screenshots, nav labels shortened",
+    "instant_navigation_back_forward": "NOT TESTED in interactive browser; mandatory follow-up before full production release acceptance"
+  }
 }

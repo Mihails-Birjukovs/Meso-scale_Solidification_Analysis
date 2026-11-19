@@ -1,6 +1,6 @@
 """Fail-closed public Markdown/CSS allowlist. Manual science/rights QA remains separate."""
 from pathlib import Path
-import json,re,sys,tomllib
+import json,re,sys,tomllib,hashlib
 
 ROOT=Path(__file__).resolve().parents[1]
 def validate(root=ROOT):
@@ -15,6 +15,22 @@ def validate(root=ROOT):
     if actual!=expected:err.append("unexpected="+str(sorted(actual-expected))+" missing="+str(sorted(expected-actual)))
     if project["site_url"]!="https://mihails-birjukovs.github.io/Meso-scale_Solidification_Analysis/":err.append("bad site_url")
     if project["docs_dir"]!="site_docs" or project["site_dir"]!="site":err.append("bad source/build root")
+    expected_repo="https://github.com/Mihails-Birjukovs/Meso-scale_Solidification_Analysis"
+    if project.get("repo_url")!=expected_repo:err.append("header GitHub URL is not public project repository")
+    theme=project.get("theme",{})
+    if theme.get("logo")!="assets/inm-horizontal.svg" or theme.get("favicon")!="assets/inm-mark.svg":
+        err.append("approved INM header logo/mark not configured")
+    approved_logos={"assets/inm-horizontal.svg":"33938b2a9a6ae442b3ede153fb79187a31040a68",
+                    "assets/inm-mark.svg":"b3a5154d96b0daf24cd44711fa13980689119287",
+                    "assets/inm-square-footer.svg":"327ffd7d447e8475e4c8f0e0d0fa68f465be841b"}
+    for rel,blob in approved_logos.items():
+        p=d/rel
+        if not p.is_file():err.append("missing approved INM logo "+rel);continue
+        data=p.read_bytes()
+        actual_blob=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
+        if actual_blob!=blob:err.append("INM logo source drift "+rel)
+        if re.search(rb"<script|<foreignObject|onload=|javascript:|<image\b",data,re.I):
+            err.append("Unexpected active SVG content "+rel)
     nav=[v for item in project["nav"] for v in item.values()]
     if len(nav)!=len(set(nav)) or set(nav)!={p for p in expected if p.endswith(".md")}:err.append("nav mismatch")
     if project["extra_css"]!=["stylesheets/inm-solidification-v1.css"]:err.append("unapproved CSS")

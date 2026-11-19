@@ -1,4 +1,4 @@
-/* INM-inspired SCIENTIFIC DOCUMENTATION theme v1 — NO official institutional logos.
+/* INM SCIENTIFIC DOCUMENTATION theme v1 — authorized official INM logos.
    Design tokens adapted from the adopted Library/Tools INM style system.
    Website content carries its own scientific and publication gates. */
 :root, [data-md-color-scheme="default"] {
@@ -73,4 +73,19 @@ footer.md-footer .md-footer-meta .md-copyright a:hover{color:#ffd0a9!important;}
 }
 .md-typeset div.arithmatex mjx-container[display="true"]{
  margin:.65em 0;
+}
+
+/* Approved OOC/WUFI INM header and footer imagery; original INM artwork
+   is not granted under the repository's software license. */
+.md-header__button.md-logo img, .md-logo img {
+ width:152px;height:54px;max-height:none;object-fit:contain;
+}
+.md-footer-meta__inner {display:flex;align-items:center;flex-wrap:wrap;min-height:5.3rem;}
+.md-footer-meta__inner::after {
+ content:"";display:block;flex:0 0 70px;width:70px;height:70px;
+ margin-left:auto;background:#fff url("../assets/inm-square-footer.svg") center/contain no-repeat;
+}
+@media(max-width:650px){
+ .md-header__button.md-logo img,.md-logo img{width:86px;height:32px;}
+ .md-footer-meta__inner::after{flex-basis:54px;width:54px;height:54px;}
 }
