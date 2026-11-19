@@ -27,9 +27,9 @@ def validate(root=ROOT):
         p=d/rel
         if not p.is_file():err.append("missing approved INM logo "+rel);continue
         data=p.read_bytes()
-        actual_blob=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\\0"+data).hexdigest()
+        actual_blob=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
         if actual_blob!=blob:err.append("INM logo source drift "+rel)
-        if re.search(rb"<script|<foreignObject|onload=|javascript:|<image\\b",data,re.I):
+        if re.search(rb"<script|<foreignObject|onload=|javascript:|<image\b",data,re.I):
             err.append("Unexpected active SVG content "+rel)
     nav=[v for item in project["nav"] for v in item.values()]
     if len(nav)!=len(set(nav)) or set(nav)!={p for p in expected if p.endswith(".md")}:err.append("nav mismatch")
