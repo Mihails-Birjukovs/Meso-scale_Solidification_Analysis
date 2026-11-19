@@ -16,7 +16,7 @@ The article documents the historical Mathematica scientific pipeline. It must no
 
 Original source radiographs, full provenance manifests, camera/thermal records, private working directories, submitted source review PNGs and independent phase annotations are not bundled with this public documentation. Publication of code **does not** confer rights to redistribute experimental images or institutional artwork.
 
-This website adopts the **INM-inspired color/layout template** using CSS and **text-only identity**, with **no official INM logo or official institutional symbol** until separately approved. It does not imply an institutional endorsement or transfer of any ISSP/OOC or HZDR image rights.
+This website adopts the **INM scientific documentation style** and, following the owner's explicit 2026-11-19 request, reuses three exact, source-verified INM vector marks from the public OOC documentation reference: the horizontal header, compact favicon and square footer logo. **These institutional marks remain separately owned and are not included in the project's software license.** Their presence does not imply institutional endorsement of research-stage findings, nor transfer any ISSP/OOC or HZDR experimental-image rights.
 
 ## Research boundaries
 
