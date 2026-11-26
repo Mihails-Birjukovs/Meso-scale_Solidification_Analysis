@@ -251,8 +251,9 @@ print("Total pixels:", referenceFrame.size)
 print("Fraction:", zero_reference / referenceFrame.size)
 
 # =============================================================================
-# I_corr = I / I0  (bez dark-current korekcijas, jo tev tādu datu nav —
-# tas ir zināms un pieņemts tuvinājums, ir minēts darba metodoloģijā)
+# R_flat is the owner-confirmed flat-field recording in Reference/, NOT J0.
+# Operational branch: I_corr=I/R_flat, no additive dark subtraction.
+# Historical Dark Current recordings require independent stability/offset QA.
 
 # Convert measurement images to float32
 I_measurement = croppedImages.astype(np.float32)
@@ -300,7 +301,7 @@ plt.axis("off")
 
 plt.subplot(1,2,2)
 plt.imshow(I_corr[0], cmap="gray")
-plt.title("I / I0")
+plt.title("I / R_flat (flat-field only)")
 plt.axis("off")
 plt.show()
 
@@ -309,13 +310,13 @@ print("I_corr dtype:", I_corr.dtype)
 
 # %% Optical density
 # =============================================================================
-g_raw = -np.log(I_corr)   # naturāllogaritms
+g_raw = -np.log(I_corr)   # diagnostic -ln(I/R_flat), not specimen P
 print("g_raw value range:", np.nanmin(g_raw), np.nanmax(g_raw))
 
 plt.figure(figsize=(6,5))
 plt.imshow(g_raw[0], cmap="viridis")
 plt.colorbar(label="g")
-plt.title("Optical density, first cropped frame")
+plt.title("Flat-field log ratio, first cropped frame (uncalibrated)")
 plt.axis("off")
 plt.show()
 
@@ -800,7 +801,12 @@ print("Location:", g_raw_output_folder)
 # Save g_raw parameters
 
 g_raw_parameters = {
-    "calculation": "g_raw = -ln(I_corr)",
+    "calculation": "g_raw = -ln(I_corr) = -ln(I/R_flat)",
+    "radiometric_branch": "flat_only",
+    "reference_role": "detector_flat_field_correction_recording",
+    "measured_dark_subtracted": False,
+    "separate_homogeneous_specimen_J0_admitted": False,
+    "absolute_composition_calibration_admitted": False,
     "number_of_frames": int(g_raw.shape[0]),
     "image_shape": list(g_raw.shape[1:]),
     "data_type": "float32",
@@ -845,6 +851,11 @@ print("Location:", g_preprocess_output_folder)
 # Save g parameters
 g_preprocess_parameters = {
     "calculation": "g = -ln(I_corr_downsampled_safe)",
+    "radiometric_branch": "flat_only",
+    "reference_role": "detector_flat_field_correction_recording",
+    "measured_dark_subtracted": False,
+    "separate_homogeneous_specimen_J0_admitted": False,
+    "absolute_composition_calibration_admitted": False,
     "number_of_frames": int(g_downsampled.shape[0]),
     "image_shape": list(g_downsampled.shape[1:]),
     "data_type": "float32",
@@ -1102,7 +1113,11 @@ parameters = {
     "image_shape": list(C_in_percent_filtered.shape[1:]),
     "concentration_min": float(np.nanmin(C_in_percent_filtered)),
     "concentration_max": float(np.nanmax(C_in_percent_filtered)),
-    "calibration_status": "provisional_assumed_points"
+    "calibration_status": "provisional_assumed_points",
+    "radiometric_branch": "flat_only",
+    "measured_dark_subtracted": False,
+    "separate_homogeneous_specimen_J0_admitted": False,
+    "absolute_composition_calibration_admitted": False
 }
 
 
